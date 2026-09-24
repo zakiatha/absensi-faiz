@@ -315,20 +315,6 @@ class AbsensiApp {
     this.switchView('view-login');
   }
 
-  async quickLogin(username) {
-    const user = window.store.getUser(username);
-    if (user) {
-      // Demo accounts initial passwords
-      const defaultPasswords = {
-        admin: 'admin123',
-        faiz: 'faiz123',
-        zaki: 'zaki123'
-      };
-      const pass = defaultPasswords[username] || '123456';
-      await this.login(user.username, pass);
-    }
-  }
-
   renderActiveUser() {
     const container = document.getElementById('nav-user-container');
     const desktopNavMenu = document.getElementById('desktop-nav-menu');
