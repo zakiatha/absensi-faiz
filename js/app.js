@@ -378,18 +378,18 @@ class AbsensiApp {
     const roleBadge = this.currentUser.role === 'admin' ? 'Admin' : 'PJ Kamar';
 
     container.innerHTML = `
-      <div style="display:flex; align-items:center; gap:8px;">
+      <div class="user-action-group" style="display:flex; align-items:center; gap:6px;">
         <div class="user-pill" title="Klik untuk edit profil & kata sandi" onclick="app.openSelfProfileModal()" style="cursor:pointer;">
           <div class="user-avatar-small">${esc(initials)}</div>
-          <div style="display:flex; flex-direction:column;">
-            <span style="font-size:0.82rem; font-weight:700; line-height:1.2; max-width:110px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          <div class="user-details-col" style="display:flex; flex-direction:column;">
+            <span class="user-name-text" style="font-size:0.80rem; font-weight:700; line-height:1.2; max-width:85px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
               ${esc(this.currentUser.name.split(' ')[0])}
             </span>
-            <span style="font-size:0.68rem; color:var(--text-muted); font-weight:700; font-family:var(--font-mono);">${esc(roleBadge)} ⚙️</span>
+            <span class="user-role-text" style="font-size:0.65rem; color:var(--text-muted); font-weight:700; font-family:var(--font-mono);">${esc(roleBadge)} ⚙️</span>
           </div>
         </div>
-        <button class="btn-icon" onclick="app.logout()" title="Keluar / Logout" style="width:38px; height:38px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button class="btn-icon btn-logout" id="btn-logout" onclick="app.logout()" title="Keluar / Logout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
             <polyline points="16 17 21 12 16 7"></polyline>
             <line x1="21" y1="12" x2="9" y2="12"></line>

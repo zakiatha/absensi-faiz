@@ -22,7 +22,10 @@
           </svg>
         </div>
         <div class="brand-text">
-          <h1>E-ABSENSI ASRAMA</h1>
+          <h1>
+            <span class="brand-title-full">E-ABSENSI ASRAMA</span>
+            <span class="brand-title-short">E-Absen</span>
+          </h1>
           <span id="active-term-badge">Pondok Pesantren & Asrama</span>
         </div>
       </div>
@@ -348,7 +351,7 @@
       <div class="attendance-header-bar">
         <div class="attendance-controls-grid">
           <!-- Room Selector -->
-          <div>
+          <div class="control-item-room">
             <label class="form-label" style="display:block; margin-bottom:2px;" for="select-absen-room">Kamar Asrama</label>
             <select id="select-absen-room" class="form-select">
               <!-- Injected via JS -->
@@ -356,7 +359,7 @@
           </div>
 
           <!-- Session Selector -->
-          <div>
+          <div class="control-item-session">
             <label class="form-label" style="display:block; margin-bottom:2px;" for="select-absen-session">Sesi Absensi</label>
             <select id="select-absen-session" class="form-select">
               <option value="pagi">🌅 Pagi (Shubuh & Halaqah)</option>
@@ -367,7 +370,7 @@
           </div>
 
           <!-- Date Selector -->
-          <div>
+          <div class="control-item-date">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
               <label class="form-label" style="margin-bottom:0;" for="input-absen-date">Tanggal</label>
               <span id="badge-date-locked" class="badge badge-primary" style="display:none; font-size:0.65rem; padding:1px 6px;">🔒 Hari Ini (PJ)</span>
@@ -376,7 +379,7 @@
           </div>
 
           <!-- Quick Actions -->
-          <div style="display:flex; gap:8px; align-items:flex-end;">
+          <div class="control-item-actions" style="display:flex; gap:8px; align-items:flex-end;">
             <button class="btn btn-success" id="btn-bulk-hadir" title="Tandai semua santri hadir sekaligus" style="flex:1; min-height:42px;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="20 6 9 17 4 12"></polyline>
