@@ -1681,86 +1681,117 @@ body {
     font-size: 0.65rem;
   }
 
-  .hero-banner {
-    padding: 18px 16px;
-    border-radius: var(--radius-lg);
+  /* ==========================================================================
+     UNIVERSAL MOBILE PRIMITIVES (High-Density & Fit Layout)
+     ========================================================================== */
+  .card {
+    padding: 12px 10px;
+    margin-bottom: 10px;
+    border-radius: var(--radius-md);
   }
 
-  .dashboard-quick-actions {
-    grid-template-columns: 1fr;
+  .card-header {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .sessions-matrix {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-
-  .session-box {
-    padding: 10px 8px;
-  }
-
-  .stats-grid-row {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-
-  .stat-metric-card {
-    padding: 12px;
-  }
-
-  .stat-value {
-    font-size: 1.35rem;
-  }
-
-  .status-buttons-matrix {
-    grid-template-columns: repeat(2, 1fr);
+  .card-title {
+    font-size: 0.95rem;
     gap: 6px;
   }
 
-  .status-btn {
-    min-height: 46px;
-    font-size: 0.8rem;
-    flex-direction: row;
-    gap: 6px;
+  .card-title svg {
+    width: 18px;
+    height: 18px;
   }
 
-  .attendance-header-bar {
-    padding: 12px;
-    flex-direction: column;
-    align-items: stretch;
+  .card-subtitle {
+    font-size: 0.70rem;
+    line-height: 1.35;
+    margin-top: 2px;
   }
 
-  .attendance-header-bar > * {
+  h4 {
+    font-size: 0.86rem;
+  }
+
+  .form-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .form-select,
+  .form-input {
+    height: 32px;
+    min-height: 32px;
+    font-size: 0.76rem;
+    padding: 3px 8px;
+  }
+
+  .filter-tabs-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 5px;
+    padding-bottom: 3px;
+    margin-bottom: 8px !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .filter-tabs-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-chip {
+    font-size: 0.72rem;
+    padding: 5px 10px;
+    min-height: 28px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Universal Data Tables */
+  .table-responsive-wrapper {
+    border-radius: var(--radius-sm);
+  }
+
+  .data-table {
+    font-size: 0.72rem;
     width: 100%;
   }
 
-  .room-selector-group {
-    flex-direction: column;
-    align-items: stretch;
+  .data-table th {
+    font-size: 0.66rem;
+    padding: 6px 8px;
+    letter-spacing: 0.02em;
+    font-weight: 700;
+    white-space: nowrap;
   }
 
-  .room-selector-group .form-select,
-  .room-selector-group .form-input {
-    width: 100%;
+  .data-table td {
+    font-size: 0.72rem;
+    padding: 6px 8px;
+    line-height: 1.3;
+    white-space: nowrap;
   }
 
-  .student-card {
-    padding: 12px;
+  .data-table .btn {
+    min-height: 24px !important;
+    padding: 2px 6px !important;
+    font-size: 0.66rem !important;
+    border-radius: var(--radius-sm);
   }
 
-  .student-avatar {
-    width: 38px;
-    height: 38px;
-    font-size: 0.85rem;
-  }
-
-  .student-name {
-    font-size: 0.92rem;
-  }
-
-  .modal-card {
-    padding: 18px 14px;
-    border-radius: var(--radius-lg);
+  .badge {
+    font-size: 0.62rem;
+    padding: 2px 5px;
+    gap: 2px;
   }
 
   .toast-container {
@@ -1776,7 +1807,351 @@ body {
   }
 
   /* ==========================================================================
-     REKAP BULANAN MOBILE OPTIMIZATION (Fit & Compact Typography)
+     1. MENU BERANDA / DASHBOARD MOBILE OPTIMIZATION
+     ========================================================================== */
+  #view-dashboard .hero-banner {
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border-radius: var(--radius-md);
+  }
+
+  #view-dashboard .hero-date-badge {
+    font-size: 0.66rem;
+    padding: 2px 8px;
+    margin-bottom: 6px;
+    gap: 4px;
+  }
+
+  #view-dashboard .hero-date-badge svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  #view-dashboard .hero-greeting {
+    font-size: 1.05rem !important;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    margin-bottom: 3px;
+  }
+
+  #view-dashboard .hero-desc {
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  #view-dashboard .dashboard-quick-actions {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  #view-dashboard .action-btn-hero {
+    min-height: 42px;
+    padding: 6px 10px;
+    gap: 8px;
+    border-radius: var(--radius-md);
+  }
+
+  #view-dashboard .btn-icon-bubble {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+  }
+
+  #view-dashboard .btn-icon-bubble svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  #view-dashboard .btn-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  #view-dashboard .btn-subtitle {
+    font-size: 0.64rem;
+    margin-top: 1px;
+  }
+
+  #view-dashboard .sessions-matrix {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  #view-dashboard .session-box {
+    padding: 8px 6px;
+    border-radius: var(--radius-md);
+  }
+
+  #view-dashboard .session-icon-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  #view-dashboard .session-name {
+    font-size: 0.76rem;
+    font-weight: 700;
+  }
+
+  #view-dashboard .session-time {
+    font-size: 0.62rem;
+    margin-top: 1px;
+  }
+
+  #view-dashboard .session-status-tag {
+    font-size: 0.60rem;
+    padding: 2px 6px;
+    margin-top: 4px;
+  }
+
+  #view-dashboard .stats-grid-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  #view-dashboard .stat-metric-card {
+    padding: 8px 10px;
+    border-radius: var(--radius-md);
+  }
+
+  #view-dashboard .stat-label {
+    font-size: 0.65rem;
+  }
+
+  #view-dashboard .stat-value {
+    font-size: 1.05rem !important;
+  }
+
+  #view-dashboard .stat-metric-card small {
+    font-size: 0.62rem !important;
+    margin-top: 2px !important;
+  }
+
+  #badge-diligence-score {
+    font-size: 0.64rem;
+    padding: 2px 6px;
+  }
+
+  #view-dashboard .progress-bar-bg {
+    height: 4px;
+  }
+
+  /* ==========================================================================
+     2. MENU ABSEN / ATTENDANCE MOBILE OPTIMIZATION
+     ========================================================================== */
+  #view-absen {
+    padding-bottom: calc(var(--bottom-nav-height) + 60px);
+  }
+
+  #view-absen .attendance-header-bar {
+    padding: 10px 10px;
+    margin-bottom: 8px;
+    border-radius: var(--radius-md);
+  }
+
+  #view-absen .attendance-controls-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+    align-items: end;
+  }
+
+  #view-absen .attendance-controls-grid .form-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  #view-absen .attendance-controls-grid .form-select,
+  #view-absen .attendance-controls-grid .form-input {
+    height: 32px;
+    min-height: 32px;
+    font-size: 0.76rem;
+    padding: 3px 6px;
+  }
+
+  #btn-bulk-hadir {
+    min-height: 32px !important;
+    font-size: 0.74rem !important;
+    padding: 4px 6px !important;
+  }
+
+  #btn-bulk-hadir svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  #badge-date-locked {
+    font-size: 0.60rem !important;
+    padding: 1px 4px !important;
+  }
+
+  /* Manual Student Picker Card */
+  #card-student-picker {
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+    border-radius: var(--radius-md);
+  }
+
+  #card-student-picker strong {
+    font-size: 0.78rem;
+  }
+
+  #card-student-picker span {
+    font-size: 0.66rem;
+  }
+
+  #btn-load-room-defaults {
+    min-height: 26px;
+    padding: 2px 7px;
+    font-size: 0.68rem;
+  }
+
+  #input-search-student-add {
+    height: 30px !important;
+    font-size: 0.74rem !important;
+  }
+
+  #chips-filter-student-room {
+    gap: 4px;
+    padding-bottom: 2px;
+  }
+
+  .room-filter-chip {
+    font-size: 0.66rem;
+    padding: 3px 8px;
+    min-height: 24px;
+  }
+
+  #select-add-student-picker {
+    height: 32px;
+    min-height: 32px;
+    font-size: 0.76rem;
+  }
+
+  #btn-add-student-to-session {
+    min-height: 32px;
+    font-size: 0.76rem;
+    padding: 4px 10px;
+  }
+
+  /* Live Attendance Summary Counter Bar */
+  .attendance-live-stats {
+    padding: 6px 10px !important;
+    margin-bottom: 8px !important;
+    gap: 5px !important;
+    border-radius: var(--radius-md);
+  }
+
+  .attendance-live-stats div:first-child {
+    font-size: 0.74rem !important;
+  }
+
+  .attendance-live-stats .badge {
+    font-size: 0.62rem !important;
+    padding: 2px 5px !important;
+    gap: 2px !important;
+  }
+
+  /* Student Attendance Cards */
+  .students-list-grid {
+    gap: 8px;
+  }
+
+  .student-card {
+    padding: 8px 10px;
+    border-radius: var(--radius-md);
+    gap: 6px;
+  }
+
+  .student-info {
+    gap: 8px;
+  }
+
+  .student-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 0.72rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .student-name {
+    font-size: 0.80rem;
+    line-height: 1.25;
+  }
+
+  .unmarked-indicator {
+    font-size: 0.58rem;
+    padding: 1px 4px;
+    margin-left: 4px;
+  }
+
+  .student-meta {
+    font-size: 0.64rem;
+    gap: 5px;
+    margin-top: 1px;
+  }
+
+  .note-toggle-link {
+    font-size: 0.66rem;
+  }
+
+  /* Compact 1-Row 4-Status Buttons Matrix */
+  .status-buttons-matrix {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 4px !important;
+  }
+
+  .status-btn {
+    min-height: 32px !important;
+    padding: 3px 2px !important;
+    font-size: 0.68rem !important;
+    flex-direction: row !important;
+    gap: 3px !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  .status-btn svg {
+    width: 13px !important;
+    height: 13px !important;
+    stroke-width: 2.2;
+  }
+
+  .note-input-container {
+    margin-top: 3px;
+  }
+
+  .note-input {
+    height: 28px !important;
+    min-height: 28px !important;
+    font-size: 0.72rem !important;
+    padding: 2px 8px !important;
+  }
+
+  /* Floating Bottom Save Bar */
+  .floating-bottom-action {
+    bottom: calc(var(--bottom-nav-height) + 8px);
+    padding: 0 10px;
+  }
+
+  #btn-save-attendance-bottom {
+    min-height: 40px !important;
+    padding: 8px 16px !important;
+    font-size: 0.82rem !important;
+    border-radius: var(--radius-pill);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+  }
+
+  #btn-save-attendance-bottom svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ==========================================================================
+     3. REKAP BULANAN MOBILE OPTIMIZATION (Fit & Compact Typography)
      ========================================================================== */
   #view-rekap .card {
     padding: 12px 10px;
@@ -1989,7 +2364,6 @@ body {
     font-size: 0.62rem !important;
   }
 
-  /* Buttons inside table cells */
   #view-rekap .data-table .btn,
   .modal-overlay .data-table .btn {
     min-height: 24px !important;
@@ -1998,7 +2372,160 @@ body {
     border-radius: var(--radius-sm);
   }
 
-  /* Modals Compact Sizing */
+  /* ==========================================================================
+     4. MENU ADMIN CONTROL CENTER MOBILE OPTIMIZATION
+     ========================================================================== */
+  #view-admin .card {
+    padding: 12px 10px;
+    margin-bottom: 10px;
+  }
+
+  #view-admin .card-header {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #view-admin .card-title {
+    font-size: 0.95rem;
+    gap: 6px;
+  }
+
+  #view-admin .card-title svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  #view-admin .card-subtitle {
+    font-size: 0.70rem;
+    line-height: 1.35;
+    margin-top: 2px;
+  }
+
+  #view-admin h4 {
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  /* Admin Header Action Buttons (Sync Cloud, Backup, Add) */
+  #view-admin .card-header > div:last-child {
+    display: flex;
+    gap: 5px;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  #view-admin .card-header .btn {
+    flex: 1;
+    min-height: 30px;
+    padding: 4px 8px;
+    font-size: 0.74rem;
+  }
+
+  #view-admin .filter-tabs-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 5px;
+    padding-bottom: 3px;
+    margin-bottom: 8px !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #view-admin .filter-chip {
+    font-size: 0.72rem;
+    padding: 5px 10px;
+    min-height: 28px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  #view-admin .data-table {
+    font-size: 0.72rem;
+    width: 100%;
+  }
+
+  #view-admin .data-table th {
+    font-size: 0.66rem;
+    padding: 6px 8px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  #view-admin .data-table td {
+    font-size: 0.72rem;
+    padding: 6px 8px;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+
+  #view-admin .data-table .btn {
+    min-height: 24px !important;
+    padding: 2px 6px !important;
+    font-size: 0.66rem !important;
+    border-radius: var(--radius-sm);
+  }
+
+  #admin-filter-student-room,
+  #admin-pj-month,
+  #admin-pj-year,
+  #btn-admin-export-pj-recap {
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 0.74rem !important;
+    padding: 3px 8px !important;
+  }
+
+  /* ==========================================================================
+     5. UNIVERSAL MODALS & DIALOGS MOBILE OPTIMIZATION
+     ========================================================================== */
+  .modal-overlay {
+    padding: 10px;
+  }
+
+  .modal-card {
+    padding: 14px 12px;
+    border-radius: var(--radius-md);
+    max-width: 96vw;
+  }
+
+  .modal-header h3 {
+    font-size: 0.95rem;
+  }
+
+  .modal-card .form-group {
+    margin-bottom: 8px;
+  }
+
+  .modal-card .form-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .modal-card .form-input,
+  .modal-card .form-select {
+    height: 32px;
+    min-height: 32px;
+    font-size: 0.76rem;
+    padding: 3px 8px;
+  }
+
+  .modal-actions {
+    margin-top: 12px;
+    gap: 6px;
+  }
+
+  .modal-actions .btn {
+    min-height: 34px;
+    font-size: 0.76rem;
+    padding: 4px 12px;
+  }
+
   #modal-student-history .modal-card,
   #modal-session-detail .modal-card {
     padding: 12px 10px;
