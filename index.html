@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="description" content="Sistem Informasi Absensi Digital Asrama Putra - Rekap Harian 4 Sesi dan Keaktifan Bapak Kamar" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';" />
+  <meta name="theme-color" content="#1e40af" />
+  <title>E-Absensi Asrama Putra | Digital Attendance System</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <header class="top-navbar">
+    <div class="top-navbar-content">
+      <div class="brand-badge" id="btn-brand-home">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>E-ABSENSI ASRAMA</h1>
+          <span id="active-term-badge">Pondok Pesantren & Asrama</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="desktop-only desktop-nav-bar" id="desktop-nav-menu" style="display:none;">
+        <button class="desktop-nav-link active" id="nav-desk-dashboard" type="button" title="Beranda Utama">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Beranda</span>
+        </button>
+        <button class="desktop-nav-link" id="nav-desk-absen" type="button" title="Input Absensi Sesi">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          <span>Absen Sesi</span>
+        </button>
+        <button class="desktop-nav-link" id="nav-desk-rekap" type="button" title="Rekapitulasi Bulanan">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Rekap Bulanan</span>
+        </button>
+        <button class="desktop-nav-link" id="nav-desk-admin" type="button" title="Menu Pengaturan Administrator" style="display:none;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span>Menu Admin</span>
+        </button>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Theme Toggle Button -->
+        <button class="btn-icon theme-toggle-btn" id="btn-theme-toggle" title="Ganti Mode Gelap/Terang" aria-label="Toggle Theme">
+          <svg id="icon-theme-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="icon-theme-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- User Profile Pill / Auth Button -->
+        <div id="nav-user-container">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT APP CONTAINER ================= -->
+  <main class="app-container">
+
+    <!-- ---------------- VIEW 1: AUTHENTICATION (LOGIN & REGISTER) ---------------- -->
+    <section id="view-login" class="view-section">
+      <div style="max-width: 480px; margin: 20px auto 40px auto;">
+        
+        <div class="card" style="padding: 28px 22px;">
+          <div style="text-align:center; margin-bottom: 24px;">
+            <div style="width: 58px; height: 58px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color:white; border-radius: 16px; display:inline-flex; align-items:center; justify-content:center; box-shadow: var(--shadow-md); margin-bottom: 12px;">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5"></path>
+                <path d="M2 12l10 5 10-5"></path>
+              </svg>
+            </div>
+            <h2 style="font-size: 1.4rem; font-weight:800; letter-spacing:-0.02em;">Portal Absensi Asrama</h2>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-top:4px;">Silakan masuk sebagai Bapak Kamar (PJ) atau Admin Pusat</p>
+          </div>
+
+          <!-- Auth Tabs -->
+          <div class="filter-tabs-row" style="margin-bottom: 20px;">
+            <button class="filter-chip active" id="tab-auth-login" style="flex:1; text-align:center;">Masuk Akun</button>
+            <button class="filter-chip" id="tab-auth-register" style="flex:1; text-align:center;">Daftar Akun Baru</button>
+          </div>
+
+          <!-- Login Form -->
+          <form id="form-login" style="display:flex; flex-direction:column; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="login-username">Username / ID Pengguna</label>
+              <input type="text" id="login-username" class="form-input" placeholder="Contoh: faiz atau admin" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="login-password">Kata Sandi (Password)</label>
+              <input type="password" id="login-password" class="form-input" placeholder="Masukkan password" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 6px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" y1="12" x2="3" y2="12"></line>
+              </svg>
+              Masuk Sekarang
+            </button>
+          </form>
+
+          <!-- Register Form -->
+          <form id="form-register" style="display:none; flex-direction:column; gap:14px;">
+            <div class="form-group">
+              <label class="form-label" for="reg-fullname">Nama Lengkap & Gelar</label>
+              <input type="text" id="reg-fullname" class="form-input" placeholder="Contoh: Ustadz Ahmad Fauzi" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-username">Username Baru</label>
+              <input type="text" id="reg-username" class="form-input" placeholder="Huruf kecil tanpa spasi" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-password">Kata Sandi</label>
+              <input type="password" id="reg-password" class="form-input" placeholder="Minimal 6 karakter" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-role">Peran / Hak Akses</label>
+              <select id="reg-role" class="form-select" required>
+                <option value="bapak_kamar">Bapak Kamar (PJ Kamar)</option>
+                <option value="admin">Administrator Pusat Asrama</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="reg-room-group">
+              <label class="form-label" for="reg-room">Pilih Kamar Yang Diampu</label>
+              <select id="reg-room" class="form-select">
+                <!-- Injected via JS -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-phone">No. WhatsApp / HP</label>
+              <input type="tel" id="reg-phone" class="form-input" placeholder="08xxxxxxxxxx" />
+            </div>
+
+            <button type="submit" class="btn btn-success" style="width:100%; margin-top: 6px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              Daftarkan Akun
+            </button>
+          </form>
+
+          <!-- Quick 1-Click Demo Buttons -->
+          <div style="margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--border-subtle);">
+            <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;">
+              ⚡ Akses Cepat Demo (1-Klik Masuk)
+            </div>
+            <div class="quick-login-grid">
+              <button class="quick-login-btn" onclick="app.quickLogin('admin')">
+                <span>🛡️ Masuk sbg Admin</span>
+                <small>Ust. Abdurrahman (Full Akses)</small>
+              </button>
+              <button class="quick-login-btn" onclick="app.quickLogin('faiz')">
+                <span>👨‍🏫 PJ Kamar 1 (Faiz)</span>
+                <small>Kamar Abu Bakar (6 Santri)</small>
+              </button>
+              <button class="quick-login-btn" onclick="app.quickLogin('zaki')">
+                <span>👨‍🏫 PJ Kamar 2 (Zaki)</span>
+                <small>Kamar Umar bin Khattab</small>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ---------------- VIEW 2: DASHBOARD (HOME) ---------------- -->
+    <section id="view-dashboard" class="view-section">
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-date-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span id="hero-date-text">Senin, 24 September 2026</span>
+        </div>
+        <h2 class="hero-greeting" id="hero-greeting-text">Ahlan wa Sahlan, Ustadz!</h2>
+        <p class="hero-desc" id="hero-status-desc">
+          Pantau dan isi kehadiran santri 4 sesi setiap hari (Pagi, Siang, Sore, Malam). Pastikan seluruh santri terabsen dengan tertib.
+        </p>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="dashboard-quick-actions">
+        <button class="btn btn-primary action-btn-hero" id="btn-quick-start-absen">
+          <div class="btn-icon-bubble">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"></polyline>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </div>
+          <div class="btn-text-content">
+            <span class="btn-title">Mulai Isi Absensi Hari Ini</span>
+            <span class="btn-subtitle">Input kehadiran santri per sesi</span>
+          </div>
+        </button>
+        <button class="btn btn-secondary action-btn-hero" id="btn-quick-view-rekap">
+          <div class="btn-icon-bubble secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+          </div>
+          <div class="btn-text-content">
+            <span class="btn-title">Rekap Keaktifan Bulan Ini</span>
+            <span class="btn-subtitle">Lihat grafik & persentase kehadiran</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- 4 Sessions Matrix for Today -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Status 4 Sesi Absensi Hari Ini
+            </h3>
+            <p class="card-subtitle" id="dashboard-session-subtitle">Status pengisian untuk kamar yang Anda ampu</p>
+          </div>
+        </div>
+
+        <div class="sessions-matrix" id="dashboard-sessions-container">
+          <!-- 4 Session Cards Injected via JS -->
+        </div>
+      </div>
+
+      <!-- Diligence & Performance Card -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              Kinerja & Keaktifan Pengisian Bulan Ini
+            </h3>
+            <p class="card-subtitle">Perhitungan otomatis kepatuhan sesi absensi kamar</p>
+          </div>
+          <span class="badge badge-success" id="badge-diligence-score">Teladan 🌟</span>
+        </div>
+
+        <div class="stats-grid-row">
+          <div class="stat-metric-card">
+            <span class="stat-label">Total Absen Diisi</span>
+            <span class="stat-value" id="stat-total-filled" style="color:var(--primary);">0</span>
+            <small style="color:var(--text-muted); font-size:0.75rem; margin-top:4px;">Sesi tercatat</small>
+          </div>
+
+          <div class="stat-metric-card">
+            <span class="stat-label">Target Bulan Ini</span>
+            <span class="stat-value" id="stat-target-sessions">120</span>
+            <small style="color:var(--text-muted); font-size:0.75rem; margin-top:4px;">30 hari x 4 sesi</small>
+          </div>
+
+          <div class="stat-metric-card">
+            <span class="stat-label">Tingkat Disiplin</span>
+            <span class="stat-value" id="stat-diligence-rate" style="color:var(--hadir-color);">0%</span>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="stat-diligence-bar" style="width: 0%; background-color: var(--hadir-color);"></div>
+            </div>
+          </div>
+
+          <div class="stat-metric-card">
+            <span class="stat-label">Kamar Yang Diampu</span>
+            <span class="stat-value" id="stat-room-name" style="font-size:1.15rem; font-family:var(--font-main);">Kamar 1</span>
+            <small id="stat-total-students" style="color:var(--text-muted); font-size:0.75rem; margin-top:4px;">6 Santri Terdaftar</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Attendance History Card -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Riwayat Absensi Terakhir
+            </h3>
+            <p class="card-subtitle">5 sesi absensi terbaru yang berhasil tersimpan</p>
+          </div>
+        </div>
+
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tanggal & Jam</th>
+                <th>Sesi</th>
+                <th>Kamar</th>
+                <th>PJ Pengabsen</th>
+                <th>Ringkasan Kehadiran</th>
+              </tr>
+            </thead>
+            <tbody id="table-recent-logs-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------- VIEW 3: INPUT ABSENSI (MOBILE OPTIMIZED) ---------------- -->
+    <section id="view-absen" class="view-section">
+      <!-- Header Toolbar for Form Selection -->
+      <div class="attendance-header-bar">
+        <div class="attendance-controls-grid">
+          <!-- Room Selector -->
+          <div>
+            <label class="form-label" style="display:block; margin-bottom:2px;" for="select-absen-room">Kamar Asrama</label>
+            <select id="select-absen-room" class="form-select">
+              <!-- Injected via JS -->
+            </select>
+          </div>
+
+          <!-- Session Selector -->
+          <div>
+            <label class="form-label" style="display:block; margin-bottom:2px;" for="select-absen-session">Sesi Absensi</label>
+            <select id="select-absen-session" class="form-select">
+              <option value="pagi">🌅 Pagi (Shubuh & Halaqah)</option>
+              <option value="siang">☀️ Siang (Dzuhur & Istirahat)</option>
+              <option value="sore">🌇 Sore (Ashar & Mandiri)</option>
+              <option value="malam">🌙 Malam (Isya & Jam Tidur)</option>
+            </select>
+          </div>
+
+          <!-- Date Selector -->
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+              <label class="form-label" style="margin-bottom:0;" for="input-absen-date">Tanggal</label>
+              <span id="badge-date-locked" class="badge badge-primary" style="display:none; font-size:0.65rem; padding:1px 6px;">🔒 Hari Ini (PJ)</span>
+            </div>
+            <input type="date" id="input-absen-date" class="form-input" />
+          </div>
+
+          <!-- Quick Actions -->
+          <div style="display:flex; gap:8px; align-items:flex-end;">
+            <button class="btn btn-success" id="btn-bulk-hadir" title="Tandai semua santri hadir sekaligus" style="flex:1; min-height:42px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              ✅ Hadirkan Semua
+            </button>
+            <button class="btn btn-primary desktop-only" id="btn-save-attendance-top" style="min-height:42px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              Simpan
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual Student Input Card (Only for Admin, hidden for PJ Kamar) -->
+      <div class="card" id="card-student-picker" style="display:none; padding:14px; margin-bottom:14px; border:1.5px dashed var(--primary-light); background:rgba(59, 130, 246, 0.03);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <div>
+            <strong style="font-size:0.9rem; display:flex; align-items:center; gap:6px;">
+              <span>➕</span> Input Santri Hadir di Kamar Ini
+            </strong>
+            <span style="font-size:0.75rem; color:var(--text-muted); display:block; margin-top:2px;">
+              Cari atau pilih nama anak satu per satu dari master santri yang hadir di kamar ini pada sesi ini.
+            </span>
+          </div>
+          <button type="button" class="btn btn-secondary" id="btn-load-room-defaults" style="min-height:30px; padding:4px 10px; font-size:0.75rem;" title="Muat cepat daftar santri bawaan kamar ini">
+            ⚡ Muat Santri Bawaan Kamar
+          </button>
+        </div>
+
+        <!-- Search Bar & Room Filter Chips -->
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px;">
+          <input type="text" id="input-search-student-add" class="form-input" placeholder="🔍 Ketik nama / NIS santri untuk mencari cepat..." style="height:38px; font-size:0.85rem;" autocomplete="off" />
+          
+          <div class="filter-chips-scroll" id="chips-filter-student-room">
+            <button type="button" class="room-filter-chip active" data-room="all">Semua Kamar</button>
+            <button type="button" class="room-filter-chip" data-room="kamar-1">Kamar 1</button>
+            <button type="button" class="room-filter-chip" data-room="kamar-2">Kamar 2</button>
+            <button type="button" class="room-filter-chip" data-room="kamar-3">Kamar 3</button>
+            <button type="button" class="room-filter-chip" data-room="kamar-4">Kamar 4</button>
+            <button type="button" class="room-filter-chip" data-room="kamar-5">Kamar 5</button>
+            <button type="button" class="room-filter-chip" data-room="kamar-6">Kamar 6</button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr; gap:8px;">
+          <select id="select-add-student-picker" class="form-select" style="width:100%; font-size:0.85rem;">
+            <option value="">-- Pilih Nama Santri untuk Dimasukkan --</option>
+            <!-- Injected dynamically via JS -->
+          </select>
+          <button type="button" class="btn btn-primary" id="btn-add-student-to-session" style="width:100%; min-height:38px; font-size:0.85rem; justify-content:center;">
+            + Masukkan Anak ke Kamar Ini
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Count Stats Bar -->
+      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px 16px; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <div style="font-size:0.85rem; font-weight:700;">
+          Daftar Santri: <span id="count-total-students" style="color:var(--primary);">0 Anak</span>
+        </div>
+        <div style="display:flex; gap:8px; font-size:0.8rem; font-weight:700; flex-wrap:wrap; align-items:center;">
+          <span class="badge" id="badge-unmarked" style="display:none; background:rgba(239,68,68,0.12); color:var(--sakit-color); border:1px dashed rgba(239,68,68,0.4);">⚠️ Belum Diabsen: <span id="counter-unmarked">0</span></span>
+          <span class="badge badge-hadir">Hadir: <span id="counter-hadir">0</span></span>
+          <span class="badge badge-izin">Izin: <span id="counter-izin">0</span></span>
+          <span class="badge badge-sakit">Sakit: <span id="counter-sakit">0</span></span>
+          <span class="badge badge-pulang">Pulang: <span id="counter-pulang">0</span></span>
+        </div>
+      </div>
+
+      <!-- Student Cards List Container -->
+      <div class="students-list-grid" id="students-attendance-list">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Floating Save Bar (Mobile Thumb-Zone) -->
+      <div class="floating-bottom-action">
+        <button class="btn btn-primary" id="btn-save-attendance-bottom" style="font-size:1rem; padding:12px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Simpan Absensi Sesi Ini
+        </button>
+      </div>
+    </section>
+
+    <!-- ---------------- VIEW 4: REKAP BULANAN & LAPORAN ---------------- -->
+    <section id="view-rekap" class="view-section">
+      <!-- Filter Bar Card -->
+      <div class="card" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+          <div>
+            <h3 class="card-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+              Laporan & Rekapitulasi Absensi
+            </h3>
+            <p class="card-subtitle">Pilih periode bulan dan filter kamar untuk melihat data</p>
+          </div>
+
+          <!-- Export & Print Actions -->
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" id="btn-print-rekap" style="min-height:38px; padding:6px 12px; font-size:0.82rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Cetak / Print
+            </button>
+            <button class="btn btn-secondary" id="btn-export-csv" style="min-height:38px; padding:6px 12px; font-size:0.82rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Ekspor CSV
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <div class="form-group" style="flex:1; min-width:140px;">
+            <label class="form-label" for="rekap-select-month">Bulan</label>
+            <select id="rekap-select-month" class="form-select">
+              <option value="1">Januari</option>
+              <option value="2">Februari</option>
+              <option value="3">Maret</option>
+              <option value="4">April</option>
+              <option value="5">Mei</option>
+              <option value="6">Juni</option>
+              <option value="7">Juli</option>
+              <option value="8">Agustus</option>
+              <option value="9">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="flex:1; min-width:110px;">
+            <label class="form-label" for="rekap-select-year">Tahun</label>
+            <select id="rekap-select-year" class="form-select">
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="flex:1; min-width:160px;">
+            <label class="form-label" for="rekap-select-room">Filter Kamar</label>
+            <select id="rekap-select-room" class="form-select">
+              <option value="all">Semua 6 Kamar Asrama</option>
+              <!-- Rooms injected via JS -->
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Sub-Sections for Rekap -->
+      <div class="filter-tabs-row" style="margin-bottom: 16px;">
+        <button class="filter-chip active" id="tab-rekap-pj">
+          👨‍🏫 Rekap Keaktifan Bapak Kamar
+        </button>
+        <button class="filter-chip" id="tab-rekap-students">
+          👥 Rekap Kehadiran Santri
+        </button>
+        <button class="filter-chip" id="tab-rekap-logs">
+          📜 Riwayat Log Harian
+        </button>
+      </div>
+
+      <!-- Rekap Sub-Panel 1: Keaktifan Bapak Kamar -->
+      <div id="subpanel-rekap-pj" class="card">
+        <div class="card-header">
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700;">Rekap Keaktifan & Kedisiplinan Bapak Kamar</h4>
+            <p class="card-subtitle">Menghitung berapa kali bapak kamar mengisi absensi 4 sesi dalam satu bulan</p>
+          </div>
+        </div>
+
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Bapak Kamar (PJ)</th>
+                <th>Kamar</th>
+                <th>Total Sesi Diisi</th>
+                <th>Target Sesi</th>
+                <th>Disiplin (%)</th>
+                <th>Pagi</th>
+                <th>Siang</th>
+                <th>Sore</th>
+                <th>Malam</th>
+                <th>Kategori</th>
+              </tr>
+            </thead>
+            <tbody id="table-rekap-pj-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Rekap Sub-Panel 2: Kehadiran Santri -->
+      <div id="subpanel-rekap-students" class="card" style="display:none;">
+        <div class="card-header" style="flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;">
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700;">Rekapitulasi Kehadiran Santri</h4>
+            <p class="card-subtitle">Total akumulasi Hadir, Izin, Sakit, dan Pulang setiap santri</p>
+          </div>
+
+          <!-- Percentage & Sorting Filters -->
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <div>
+              <label class="form-label" style="font-size:0.75rem; margin-bottom:2px;" for="rekap-filter-percentage">Filter Persentase</label>
+              <select id="rekap-filter-percentage" class="form-select" style="min-height:34px; padding:3px 8px; font-size:0.8rem;">
+                <option value="all">Semua Persentase</option>
+                <option value="low">⚠️ Rendah (< 75%)</option>
+                <option value="medium">⚡ Sedang (75% - 89%)</option>
+                <option value="high">🌟 Baik (≥ 90%)</option>
+                <option value="unrecorded">❓ Belum Ada Data</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" style="font-size:0.75rem; margin-bottom:2px;" for="rekap-sort-percentage">Urutkan</label>
+              <select id="rekap-sort-percentage" class="form-select" style="min-height:34px; padding:3px 8px; font-size:0.8rem;">
+                <option value="lowest">📉 Terendah (Prioritas Evaluasi)</option>
+                <option value="highest">📈 Tertinggi</option>
+                <option value="name">🔤 Nama (A - Z)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Santri</th>
+                <th>Kamar</th>
+                <th>Kelas</th>
+                <th>Hadir</th>
+                <th>Izin</th>
+                <th>Sakit</th>
+                <th>Pulang</th>
+                <th>Persentase</th>
+                <th>Riwayat & Petugas</th>
+              </tr>
+            </thead>
+            <tbody id="table-rekap-students-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Rekap Sub-Panel 3: Log Detail Harian -->
+      <div id="subpanel-rekap-logs" class="card" style="display:none;">
+        <div class="card-header" style="flex-wrap: wrap; gap: 12px; align-items: center;">
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700;">Riwayat Log Sesi Absensi</h4>
+            <p class="card-subtitle" id="rekap-log-subtitle">Daftar sesi absensi yang tersimpan pada bulan terpilih</p>
+          </div>
+          <div id="rekap-log-scope-indicator">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Filter & Pencarian Riwayat Log -->
+        <div class="log-filter-toolbar">
+          <div style="flex: 1 1 200px; min-width: 170px;">
+            <input type="text" id="rekap-log-search" class="form-input" placeholder="🔍 Cari tanggal, santri, atau ustadz..." style="height: 38px; font-size: 0.85rem;" autocomplete="off" />
+          </div>
+          <div style="flex: 1 1 180px; min-width: 160px;" id="container-log-filter-pj">
+            <select id="rekap-log-filter-pj" class="form-select" style="height: 38px; font-size: 0.85rem;">
+              <option value="all">Semua Petugas Penginput</option>
+              <!-- Injected via JS -->
+            </select>
+          </div>
+          <div style="flex: 1 1 140px; min-width: 130px;">
+            <select id="rekap-log-filter-session" class="form-select" style="height: 38px; font-size: 0.85rem;">
+              <option value="all">Semua Sesi</option>
+              <option value="pagi">Pagi (Shubuh)</option>
+              <option value="siang">Siang (Dzuhur)</option>
+              <option value="sore">Sore (Ashar)</option>
+              <option value="malam">Malam (Isya)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Sesi</th>
+                <th>Kamar Presensi</th>
+                <th>Petugas Pengabsen (PJ Kamar)</th>
+                <th>Waktu Simpan</th>
+                <th>Rincian Presensi</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="table-rekap-logs-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Printable Official Report Header & Structure (Shown only in print) -->
+      <div class="print-header">
+        <h2>PONDOK PESANTREN & ASRAMA PUTRA</h2>
+        <p>LAPORAN REKAPITULASI ABSENSI BULANAN SANTRI & KEAKTIFAN BAPAK KAMAR</p>
+        <p id="print-period-text">Periode: September 2026</p>
+      </div>
+      <div class="print-signature-row">
+        <div class="signature-box">
+          <p>Mengetahui,</p>
+          <p>Bapak Kamar / PJ Asrama</p>
+          <div class="signature-line" id="print-sign-pj">( ........................................ )</div>
+        </div>
+        <div class="signature-box">
+          <p>Asrama, 24 September 2026</p>
+          <p>Kepala Pengasuhan & Mudir</p>
+          <div class="signature-line">( Ust. H. Abdurrahman )</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------- VIEW 5: ADMIN CONTROL CENTER (EDIT ALL CRITERIA) ---------------- -->
+    <section id="view-admin" class="view-section">
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              Pusat Kendali Admin Asrama
+            </h3>
+            <p class="card-subtitle">Kelola dan edit semua kriteria, kamar, santri, sesi, dan akun bapak kamar</p>
+          </div>
+          <button class="btn btn-secondary" id="btn-admin-backup" style="min-height:36px; padding:4px 12px; font-size:0.8rem;">
+            💾 Backup / Restore Data
+          </button>
+        </div>
+
+        <!-- Admin Sub-Navigation Tabs -->
+        <div class="filter-tabs-row">
+          <button class="filter-chip active" id="tab-admin-rooms">🏢 Kelola Kamar</button>
+          <button class="filter-chip" id="tab-admin-students">👨‍🎓 Kelola Santri</button>
+          <button class="filter-chip" id="tab-admin-criteria">⚙️ Kriteria Status</button>
+          <button class="filter-chip" id="tab-admin-sessions">⏰ Sesi Waktu</button>
+          <button class="filter-chip" id="tab-admin-users">👥 Akun & Bapak Kamar</button>
+          <button class="filter-chip" id="tab-admin-pj-monitoring">📊 Monitoring Keaktifan PJ</button>
+        </div>
+      </div>
+
+      <!-- Admin Panel: Kamar -->
+      <div id="admin-panel-rooms" class="card">
+        <div class="card-header">
+          <h4 style="font-size:1.05rem; font-weight:700;">Daftar Kamar Asrama (Total 6 Kamar)</h4>
+          <button class="btn btn-primary" id="btn-add-room" style="min-height:38px; padding:6px 14px; font-size:0.82rem;">
+            + Tambah Kamar
+          </button>
+        </div>
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nama Kamar</th>
+                <th>Bapak Kamar (PJ)</th>
+                <th>Kapasitas</th>
+                <th>Lokasi</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="table-admin-rooms-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin Panel: Santri -->
+      <div id="admin-panel-students" class="card" style="display:none;">
+        <div class="card-header">
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700;">Data Santri Penghuni Kamar</h4>
+            <p class="card-subtitle">Total santri terdaftar di semua kamar</p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <select id="admin-filter-student-room" class="form-select" style="min-height:38px; padding:4px 10px; font-size:0.82rem;">
+              <option value="all">Semua Kamar</option>
+              <!-- Injected via JS -->
+            </select>
+            <button class="btn btn-primary" id="btn-add-student" style="min-height:38px; padding:6px 14px; font-size:0.82rem;">
+              + Tambah Santri
+            </button>
+          </div>
+        </div>
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>NIS</th>
+                <th>Nama Santri</th>
+                <th>Kamar</th>
+                <th>Kelas</th>
+                <th>Kontak Wali</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="table-admin-students-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin Panel: Kriteria Status Absensi -->
+      <div id="admin-panel-criteria" class="card" style="display:none;">
+        <div class="card-header">
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700;">Kriteria Status Kehadiran</h4>
+            <p class="card-subtitle">Kelola label status, warna badge, dan aturan kriteria absensi</p>
+          </div>
+          <button class="btn btn-primary" id="btn-add-criterion" style="min-height:38px; padding:6px 14px; font-size:0.82rem;">
+            + Tambah Kriteria Status
+          </button>
+        </div>
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Kode Status</th>
+                <th>Nama Label</th>
+                <th>Warna Badge</th>
+                <th>Keterangan Aturan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="table-admin-criteria-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin Panel: Sesi Waktu Absensi -->
+      <div id="admin-panel-sessions" class="card" style="display:none;">
+        <div class="card-header">
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700;">Pengaturan Sesi Absensi Harian</h4>
+            <p class="card-subtitle">Atur rentang jam aktif, nama sesi, atau tambah sesi baru</p>
+          </div>
+          <button class="btn btn-primary" id="btn-add-session" style="min-height:38px; padding:6px 14px; font-size:0.82rem;">
+            + Tambah Sesi Waktu
+          </button>
+        </div>
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Urutan</th>
+                <th>ID Sesi</th>
+                <th>Nama Sesi</th>
+                <th>Rentang Jam</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="table-admin-sessions-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin Panel: Pengguna & Bapak Kamar -->
+      <div id="admin-panel-users" class="card" style="display:none;">
+        <div class="card-header">
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700;">Manajemen Akun Pengguna & Bapak Kamar</h4>
+            <p class="card-subtitle">Kelola kata sandi, status izin akses, dan penugasan kamar</p>
+          </div>
+          <button class="btn btn-primary" id="btn-add-user" style="min-height:38px; padding:6px 14px; font-size:0.82rem;">
+            + Tambah Akun
+          </button>
+        </div>
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Nama Lengkap</th>
+                <th>Peran</th>
+                <th>Kamar Tugas</th>
+                <th>Kata Sandi</th>
+                <th>Status Akses</th>
+                <th>No WhatsApp</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="table-admin-users-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin Panel: Monitoring Keaktifan PJ Kamar -->
+      <div id="admin-panel-pj-monitoring" class="card" style="display:none;">
+        <div class="card-header" style="flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;">
+          <div>
+            <h4 style="font-size:1.05rem; font-weight:700;">📊 Monitoring Keaktifan Bapak Kamar (PJ)</h4>
+            <p class="card-subtitle">Pantau kedisiplinan input absensi seluruh PJ Kamar secara menyeluruh</p>
+          </div>
+          <button class="btn btn-secondary" id="btn-admin-export-pj-recap" style="min-height:36px; padding:4px 12px; font-size:0.8rem;">
+            📥 Ekspor Rekap PJ
+          </button>
+        </div>
+
+        <!-- Period & Filter Controls -->
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; padding:12px 16px; border-bottom:1px solid var(--border-color);">
+          <div class="form-group" style="flex:1; min-width:120px;">
+            <label class="form-label" for="admin-pj-month">Bulan</label>
+            <select id="admin-pj-month" class="form-select">
+              <option value="1">Januari</option>
+              <option value="2">Februari</option>
+              <option value="3">Maret</option>
+              <option value="4">April</option>
+              <option value="5">Mei</option>
+              <option value="6">Juni</option>
+              <option value="7">Juli</option>
+              <option value="8">Agustus</option>
+              <option value="9">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1; min-width:90px;">
+            <label class="form-label" for="admin-pj-year">Tahun</label>
+            <select id="admin-pj-year" class="form-select">
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1; min-width:140px;">
+            <label class="form-label" for="admin-pj-sort">Urutkan</label>
+            <select id="admin-pj-sort" class="form-select">
+              <option value="rate-asc">📉 Terendah Dulu (Evaluasi)</option>
+              <option value="rate-desc">📈 Tertinggi Dulu</option>
+              <option value="name">🔤 Nama (A - Z)</option>
+              <option value="sessions">🔢 Total Sesi</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1; min-width:140px;">
+            <label class="form-label" for="admin-pj-filter-badge">Filter Kategori</label>
+            <select id="admin-pj-filter-badge" class="form-select">
+              <option value="all">Semua Kategori</option>
+              <option value="teladan">🌟 Teladan (≥90%)</option>
+              <option value="baik">👍 Baik (75-89%)</option>
+              <option value="cukup">⚠️ Cukup (50-74%)</option>
+              <option value="evaluasi">❗ Perlu Evaluasi (&lt;50%)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Summary Stat Cards -->
+        <div id="admin-pj-summary-row" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; padding:12px 16px;">
+          <!-- Injected via JS -->
+        </div>
+
+        <!-- PJ Detail Table -->
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:40px;">No</th>
+                <th>Bapak Kamar (PJ)</th>
+                <th>Kamar Tugas</th>
+                <th>Sesi Diisi</th>
+                <th>Target</th>
+                <th>Disiplin</th>
+                <th>Pagi</th>
+                <th>Siang</th>
+                <th>Sore</th>
+                <th>Malam</th>
+                <th>Kategori</th>
+                <th>Status Akun</th>
+              </tr>
+            </thead>
+            <tbody id="table-admin-pj-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Target Config Section -->
+        <div style="padding:14px 16px; border-top:1px solid var(--border-color);">
+          <p style="font-size:0.82rem; color:var(--text-muted); margin:0;">💡 Target sesi dihitung otomatis: <strong>jumlah hari dalam bulan × jumlah sesi aktif</strong>. Kelola sesi aktif di tab <em>"⏰ Sesi Waktu"</em>.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= BOTTOM NAVIGATION BAR (MOBILE 9:16) ================= -->
+  <nav class="bottom-nav" id="mobile-bottom-nav">
+    <div class="nav-item active" id="btn-nav-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      <span>Beranda</span>
+    </div>
+
+    <div class="nav-item" id="btn-nav-absen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <polyline points="9 11 12 14 22 4"></polyline>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+      </svg>
+      <span>Absen</span>
+    </div>
+
+    <div class="nav-item" id="btn-nav-rekap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <line x1="18" y1="20" x2="18" y2="10"></line>
+        <line x1="12" y1="20" x2="12" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="14"></line>
+      </svg>
+      <span>Rekap</span>
+    </div>
+
+    <div class="nav-item" id="btn-nav-admin" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+      <span id="nav-label-admin">Admin</span>
+    </div>
+  </nav>
+
+  <!-- ================= MODALS & DIALOGS ================= -->
+
+  <!-- Modal 1: Edit / Tambah Kamar -->
+  <div class="modal-overlay" id="modal-room">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-room-title">Edit Data Kamar</h3>
+        <button class="btn-icon" onclick="app.closeModal('modal-room')">&times;</button>
+      </div>
+      <form id="form-modal-room">
+        <div class="modal-body">
+          <input type="hidden" id="modal-room-id" />
+          <div class="form-group">
+            <label class="form-label" for="modal-room-name">Nama Kamar Asrama</label>
+            <input type="text" id="modal-room-name" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-room-pj">Bapak Kamar (PJ Kamar)</label>
+            <select id="modal-room-pj" class="form-select">
+              <!-- Injected via JS -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-room-capacity">Kapasitas Maksimal</label>
+            <input type="number" id="modal-room-capacity" class="form-input" min="1" max="50" value="10" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-room-floor">Lokasi / Lantai</label>
+            <input type="text" id="modal-room-floor" class="form-input" placeholder="Lantai 1 / Lantai 2" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-room')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Kamar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Edit / Tambah Santri -->
+  <div class="modal-overlay" id="modal-student">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-student-title">Tambah Data Santri</h3>
+        <button class="btn-icon" onclick="app.closeModal('modal-student')">&times;</button>
+      </div>
+      <form id="form-modal-student">
+        <div class="modal-body">
+          <input type="hidden" id="modal-student-id" />
+          <div class="form-group">
+            <label class="form-label" for="modal-student-nis">Nomor Induk Santri (NIS)</label>
+            <input type="text" id="modal-student-nis" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-student-name">Nama Lengkap Santri</label>
+            <input type="text" id="modal-student-name" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-student-room">Penempatan Kamar</label>
+            <select id="modal-student-room" class="form-select" required>
+              <!-- Injected via JS -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-student-class">Kelas / Tingkat</label>
+            <input type="text" id="modal-student-class" class="form-input" placeholder="Contoh: 10-A" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-student-parent">No. WhatsApp Wali Santri</label>
+            <input type="tel" id="modal-student-parent" class="form-input" placeholder="08xxxxxxxxxx" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-student')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Data Santri</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Edit / Tambah Kriteria Status -->
+  <div class="modal-overlay" id="modal-criterion">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-criterion-title">Kriteria Status Kehadiran</h3>
+        <button class="btn-icon" onclick="app.closeModal('modal-criterion')">&times;</button>
+      </div>
+      <form id="form-modal-criterion">
+        <div class="modal-body">
+          <div class="form-group" id="group-criterion-id">
+            <label class="form-label" for="modal-criterion-id">Kode Status (cth: dispen, alpa)</label>
+            <input type="text" id="modal-criterion-id" class="form-input" style="font-family:var(--font-mono);" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-criterion-label">Nama Label Status</label>
+            <input type="text" id="modal-criterion-label" class="form-input" placeholder="Contoh: Dispensasi" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-criterion-color">Warna Status Badge</label>
+            <input type="color" id="modal-criterion-color" value="#059669" style="width:100%; height:44px; border:none; border-radius:8px; cursor:pointer;" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-criterion-desc">Aturan / Keterangan Status</label>
+            <textarea id="modal-criterion-desc" class="form-input" rows="3" placeholder="Jelaskan kondisi berlakunya status kehadiran ini" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-criterion')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Kriteria</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Edit / Tambah Sesi Waktu -->
+  <div class="modal-overlay" id="modal-session">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-session-title">Pengaturan Sesi Absensi</h3>
+        <button class="btn-icon" onclick="app.closeModal('modal-session')">&times;</button>
+      </div>
+      <form id="form-modal-session">
+        <div class="modal-body">
+          <div class="form-group" id="group-session-id">
+            <label class="form-label" for="modal-session-id">ID Sesi (cth: dhuha, tahfidz)</label>
+            <input type="text" id="modal-session-id" class="form-input" style="font-family:var(--font-mono);" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-session-label">Nama & Keterangan Sesi</label>
+            <input type="text" id="modal-session-label" class="form-input" placeholder="Contoh: ☀️ Absen Siang (Dzuhur)" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-session-timerange">Rentang Waktu Pelaksanaan</label>
+            <input type="text" id="modal-session-timerange" class="form-input" placeholder="Contoh: 12:30 - 14:00" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-session-order">Nomor Urutan Tampilan (1, 2, 3...)</label>
+            <input type="number" id="modal-session-order" class="form-input" min="1" max="20" value="1" required />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-session')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Sesi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Tambah / Edit Pengguna -->
+  <div class="modal-overlay" id="modal-user">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-user-title">Tambah Akun Pengguna</h3>
+        <button class="btn-icon" onclick="app.closeModal('modal-user')">&times;</button>
+      </div>
+      <form id="form-modal-user">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="modal-user-username">Username Login</label>
+            <input type="text" id="modal-user-username" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-user-fullname">Nama Lengkap</label>
+            <input type="text" id="modal-user-fullname" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-user-password">Kata Sandi (Password)</label>
+            <div style="position:relative; display:flex; align-items:center;">
+              <input type="text" id="modal-user-password" class="form-input" style="padding-right:40px; font-family:var(--font-mono);" placeholder="Masukkan kata sandi akun" required />
+              <button type="button" id="btn-toggle-modal-user-pwd" class="btn-icon" style="position:absolute; right:8px;" title="Lihat/Sembunyikan">👁️</button>
+            </div>
+            <small style="color:var(--text-muted); font-size:0.75rem;">Admin dapat melihat dan mengatur langsung kata sandi akun PJ kamar ini.</small>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-user-status">Status Izin Akses Akun</label>
+            <select id="modal-user-status" class="form-select" required>
+              <option value="active">✅ Aktif (Bisa Login & Input Absensi)</option>
+              <option value="inactive">🚫 Non-Aktif (Akses Ditangguhkan / Diblokir)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-user-role">Peran / Role</label>
+            <select id="modal-user-role" class="form-select" required>
+              <option value="bapak_kamar">Bapak Kamar (PJ Kamar)</option>
+              <option value="admin">Administrator Pusat Asrama</option>
+            </select>
+          </div>
+          <div class="form-group" id="modal-user-room-group">
+            <label class="form-label" for="modal-user-room">Kamar Penugasan</label>
+            <select id="modal-user-room" class="form-select">
+              <option value="">Akses Semua Kamar (Fleksibel)</option>
+              <!-- Injected via JS -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modal-user-phone">Nomor Telepon / WhatsApp</label>
+            <input type="tel" id="modal-user-phone" class="form-input" placeholder="08xxxxxxxxxx" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-user')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Akun</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 6: Backup & Restore Data Database -->
+  <div class="modal-overlay" id="modal-backup">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Backup & Pulihkan Database Asrama</h3>
+        <button class="btn-icon" onclick="app.closeModal('modal-backup')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.45;">
+          Data absensi, santri, kamar, dan akun tersimpan di browser lokal perangkat ini. Anda dapat mencadangkan seluruh data menjadi file JSON atau memulihkannya.
+        </p>
+
+        <div style="background:var(--bg-subtle); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:10px;">
+          <h4 style="font-size:0.9rem; font-weight:700;">💾 Unduh Cadangan (Backup JSON)</h4>
+          <button class="btn btn-primary" onclick="app.exportDatabaseJSON()">
+            Unduh File Backup Database
+          </button>
+        </div>
+
+        <div style="background:var(--bg-subtle); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+          <h4 style="font-size:0.9rem; font-weight:700;">📤 Pulihkan Database (Restore JSON)</h4>
+          <input type="file" id="input-restore-file" accept=".json" class="form-input" />
+          <button class="btn btn-secondary" onclick="app.importDatabaseJSON()">
+            Unggah & Pulihkan Database
+          </button>
+        </div>
+
+        <div style="background:var(--sakit-bg); border:1px solid var(--sakit-border); padding:14px; border-radius:var(--radius-md); margin-top:8px;">
+          <h4 style="font-size:0.9rem; font-weight:700; color:var(--sakit-color);">⚠️ Reset ke Data Bawaan Asrama</h4>
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:8px;">Kembalikan seluruh data ke awal (6 kamar bawaan, 36 santri, dan akun demo).</p>
+          <button class="btn btn-danger" onclick="app.resetAllDatabase()" style="width:100%;">
+            Reset Seluruh Data
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-backup')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7: Detail Riwayat Harian Absensi Santri (Audit Tanggal & Petugas Penginput) -->
+  <div class="modal-overlay" id="modal-student-history">
+    <div class="modal-card" style="max-width: 680px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="m-history-student-name">Riwayat Harian Absensi Santri</h3>
+          <p class="card-subtitle" id="m-history-student-meta">Memuat detail santri...</p>
+        </div>
+        <button class="btn-icon" onclick="app.closeModal('modal-student-history')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Quick Summary Metrics -->
+        <div class="stats-grid-row" style="margin-bottom: 12px;">
+          <div class="stat-metric-card" style="padding:10px;">
+            <span class="stat-label">Total Sesi</span>
+            <span class="stat-value" id="m-stat-total" style="font-size:1.2rem;">0</span>
+          </div>
+          <div class="stat-metric-card" style="padding:10px;">
+            <span class="stat-label">Hadir</span>
+            <span class="stat-value" id="m-stat-hadir" style="font-size:1.2rem; color:var(--hadir-color);">0</span>
+          </div>
+          <div class="stat-metric-card" style="padding:10px;">
+            <span class="stat-label">Izin / Sakit / Pulang</span>
+            <span class="stat-value" id="m-stat-others" style="font-size:1.2rem; color:var(--izin-color);">0</span>
+          </div>
+          <div class="stat-metric-card" style="padding:10px;">
+            <span class="stat-label">Persentase</span>
+            <span class="stat-value" id="m-stat-rate" style="font-size:1.2rem; color:var(--primary);">0%</span>
+          </div>
+        </div>
+
+        <div style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">
+          📅 Catatan Absensi Per Hari & Petugas Penginput:
+        </div>
+
+        <!-- Detail History Table -->
+        <div class="table-responsive-wrapper" style="max-height: 48vh; overflow-y: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Sesi</th>
+                <th>Status</th>
+                <th>Petugas yang Menginput</th>
+                <th>Waktu Simpan</th>
+                <th>Catatan</th>
+              </tr>
+            </thead>
+            <tbody id="m-table-student-history-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-student-history')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 8: Detail Rincian Sesi Absensi (Lihat seluruh anak & penginput) -->
+  <div class="modal-overlay" id="modal-session-detail">
+    <div class="modal-card" style="max-width: 800px; width: 95%;">
+      <div class="modal-header">
+        <div>
+          <h3 id="m-session-title">Rincian Absensi Sesi</h3>
+          <p class="card-subtitle" id="m-session-subtitle">Petugas: - | Tanggal: -</p>
+        </div>
+        <button class="btn-icon" onclick="app.closeModal('modal-session-detail')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Author / Petugas Pengabsen & Info Sesi Box -->
+        <div id="m-session-author-card" style="margin-bottom: 14px;">
+          <!-- Injected via JS -->
+        </div>
+
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Santri</th>
+                <th>Status Presensi</th>
+                <th>Catatan Keterangan</th>
+              </tr>
+            </thead>
+            <tbody id="m-table-session-detail-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer" id="modal-session-detail-footer">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-session-detail')">Tutup</button>
+        <button type="button" class="btn btn-primary" id="btn-edit-session-admin" style="display:none;" onclick="app.editPastSessionByAdmin()">✏️ Ubah Absensi (Admin)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 9: Profil Pribadi & Ubah Kata Sandi Akun -->
+  <div class="modal-overlay" id="modal-profile">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <div>
+          <h3>Pengaturan Profil & Keamanan</h3>
+          <p class="card-subtitle">Ubah informasi pribadi dan kata sandi akun Anda</p>
+        </div>
+        <button class="btn-icon" onclick="app.closeModal('modal-profile')">&times;</button>
+      </div>
+
+      <form id="form-self-profile">
+        <div class="modal-body">
+          <div style="display:flex; align-items:center; gap:12px; padding:12px; background:var(--bg-subtle); border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
+            <div id="self-profile-avatar" class="user-avatar-small" style="width:40px; height:40px; font-size:0.95rem;">-</div>
+            <div>
+              <div id="self-profile-username-display" style="font-weight:700; font-family:var(--font-mono);">@username</div>
+              <span id="self-profile-role-badge" class="badge badge-primary">Role</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="self-profile-fullname">Nama Lengkap</label>
+            <input type="text" id="self-profile-fullname" class="form-input" required maxlength="80" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="self-profile-phone">Nomor WhatsApp / Kontak</label>
+            <input type="tel" id="self-profile-phone" class="form-input" maxlength="20" placeholder="08xxxxxxxxxx" />
+          </div>
+
+          <div style="font-size:0.84rem; font-weight:700; color:var(--text-main); margin-top:6px;">
+            🔑 Ubah Kata Sandi (Kosongkan jika tidak ingin diubah):
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="self-profile-new-password">Kata Sandi Baru (Min. 6 Karakter)</label>
+            <input type="password" id="self-profile-new-password" class="form-input" placeholder="Masukkan kata sandi baru" maxlength="64" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="self-profile-confirm-password">Konfirmasi Kata Sandi Baru</label>
+            <input type="password" id="self-profile-confirm-password" class="form-input" placeholder="Ulangi kata sandi baru" maxlength="64" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-profile')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= FLOATING TOAST FEEDBACK ================= -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script src="js/security.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
