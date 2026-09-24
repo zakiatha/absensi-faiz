@@ -19,6 +19,7 @@ class AbsensiApp {
     this.initAuth();
     this.setupEventListeners();
     this.setupDatePickers();
+    this.setupCloudSyncUI();
     this.renderActiveUser();
 
     // Check if logged in
@@ -114,6 +115,85 @@ class AbsensiApp {
       if (iconSun) iconSun.style.display = 'none';
       if (iconMoon) iconMoon.style.display = 'block';
       if (metaThemeColor) metaThemeColor.setAttribute('content', '#1e40af');
+    }
+  }
+
+  // --- SUPABASE CLOUD SYNC UI & HANDLERS ---
+  setupCloudSyncUI() {
+    if (window.SupabaseSync) {
+      window.SupabaseSync.onStatusChange((status, lastSync) => {
+        const dot = document.getElementById('cloud-status-dot');
+        const label = document.getElementById('cloud-status-label');
+        const btn = document.getElementById('btn-cloud-sync');
+        if (!dot || !label) return;
+
+        dot.className = 'cloud-dot ' + status;
+        if (status === 'connected') {
+          label.textContent = 'Cloud Aktif';
+          if (btn) btn.title = `Supabase Terhubung (${lastSync ? 'Sinkron: ' + lastSync.toLocaleTimeString('id-ID') : 'Aktif'}). Klik untuk sinkron ulang.`;
+        } else if (status === 'syncing') {
+          label.textContent = 'Sinkron...';
+          if (btn) btn.title = 'Sedang menyinkronkan data dengan Supabase...';
+        } else if (status === 'checking') {
+          label.textContent = 'Cek Cloud...';
+          if (btn) btn.title = 'Memeriksa koneksi Supabase...';
+        } else {
+          label.textContent = 'Lokal (Offline)';
+          if (btn) btn.title = 'Berjalan dalam mode lokal (Offline). Klik untuk coba hubungkan ke Supabase.';
+        }
+      });
+
+      const btnCloudSync = document.getElementById('btn-cloud-sync');
+      if (btnCloudSync) {
+        btnCloudSync.addEventListener('click', async () => {
+          this.playHaptic(40);
+          this.showToast('Memeriksa koneksi & sinkronisasi Supabase...', 'info');
+          const connected = await window.SupabaseSync.checkConnection();
+          if (connected) {
+            const res = await window.SupabaseSync.pullAllFromSupabase(window.store);
+            if (res.success) {
+              this.showToast('Data berhasil disinkronkan dengan Supabase Cloud!', 'success');
+              this.onCloudSyncComplete();
+            } else {
+              this.showToast('Gagal menarik data dari Supabase: ' + (res.error || 'Unknown error'), 'error');
+            }
+          } else {
+            this.showToast('Koneksi Supabase belum aktif. Pastikan tabel di SQL Editor sudah dibuat.', 'warning');
+          }
+        });
+      }
+
+      // Hook admin cloud sync button
+      const btnAdminSync = document.getElementById('btn-admin-sync-cloud');
+      if (btnAdminSync) {
+        btnAdminSync.addEventListener('click', async () => {
+          this.playHaptic(50);
+          this.showToast('Memulai sinkronisasi data lokal ke Supabase...', 'info');
+          const connected = await window.SupabaseSync.checkConnection();
+          if (!connected) {
+            this.showToast('Koneksi ke Supabase gagal atau tabel belum dibuat di SQL Editor.', 'error');
+            return;
+          }
+          const pushRes = await window.SupabaseSync.pushAllToSupabase(window.store);
+          if (pushRes.success) {
+            this.showToast('Seluruh data lokal berhasil diunggah ke Supabase Cloud!', 'success');
+          } else {
+            this.showToast('Gagal mengunggah data: ' + (pushRes.error || 'Unknown error'), 'error');
+          }
+        });
+      }
+    }
+  }
+
+  onCloudSyncComplete() {
+    if (this.currentView === 'view-dashboard') {
+      this.renderDashboard();
+    } else if (this.currentView === 'view-admin') {
+      this.renderAdminView();
+    } else if (this.currentView === 'view-rekap') {
+      this.renderMonthlyRecap();
+    } else if (this.currentView === 'view-absen') {
+      this.updateAttendanceCounters();
     }
   }
 
@@ -2275,6 +2355,11 @@ class AbsensiApp {
     if (brand) {
       brand.addEventListener('click', () => this.switchView(this.currentUser ? 'view-dashboard' : 'view-login'));
     }
+
+    // Global listener when Supabase finishes background sync
+    window.addEventListener('supabase-data-synced', () => {
+      this.onCloudSyncComplete();
+    });
 
     // Desktop Nav Items
     const dDash = document.getElementById('nav-desk-dashboard');

@@ -210,6 +210,28 @@ class DataStore {
     }
     // Proactively migrate plaintext credentials to salted SHA-256 hashes
     this.hashInitialPasswordsIfNeeded();
+
+    // Asynchronously connect & sync with Supabase Cloud
+    setTimeout(() => this.syncWithSupabase(), 400);
+  }
+
+  async syncWithSupabase() {
+    if (window.SupabaseSync) {
+      try {
+        const connected = await window.SupabaseSync.checkConnection();
+        if (connected) {
+          const res = await window.SupabaseSync.pullAllFromSupabase(this);
+          if (res && res.success) {
+            window.dispatchEvent(new CustomEvent('supabase-data-synced', { detail: res }));
+            if (window.app && typeof window.app.onCloudSyncComplete === 'function') {
+              window.app.onCloudSyncComplete(res);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('[DataStore] Supabase sync skipped:', e);
+      }
+    }
   }
 
   async hashInitialPasswordsIfNeeded() {
@@ -319,6 +341,7 @@ class DataStore {
       this.data.rooms.push(room);
     }
     this.save();
+    window.SupabaseSync?.upsertRoom(room);
   }
 
   deleteRoom(id) {
@@ -326,6 +349,7 @@ class DataStore {
     // Also detach or handle students in this room
     this.data.students = this.data.students.filter(s => s.roomId !== id);
     this.save();
+    window.SupabaseSync?.deleteRoom(id);
   }
 
   // --- USERS / BAPAK KAMAR CRUD ---
@@ -355,6 +379,7 @@ class DataStore {
       this.data.users.push(cleanUser);
     }
     this.save();
+    window.SupabaseSync?.upsertUser(cleanUser);
   }
 
   deleteUser(username) {
@@ -367,6 +392,7 @@ class DataStore {
       }
     });
     this.save();
+    window.SupabaseSync?.deleteUser(target);
   }
 
   // --- SESSIONS CRUD ---
@@ -382,11 +408,13 @@ class DataStore {
       this.data.sessions.push(session);
     }
     this.save();
+    window.SupabaseSync?.upsertSession(session);
   }
 
   deleteSession(id) {
     this.data.sessions = this.data.sessions.filter(s => s.id !== id);
     this.save();
+    window.SupabaseSync?.deleteSession(id);
   }
 
   // --- CRITERIA CRUD ---
@@ -402,11 +430,13 @@ class DataStore {
       this.data.criteria.push(criterion);
     }
     this.save();
+    window.SupabaseSync?.upsertCriterion(criterion);
   }
 
   deleteCriterion(id) {
     this.data.criteria = (this.data.criteria || []).filter(c => c.id !== id);
     this.save();
+    window.SupabaseSync?.deleteCriterion(id);
   }
 
   // --- STUDENTS CRUD ---
@@ -430,11 +460,13 @@ class DataStore {
       this.data.students.push(student);
     }
     this.save();
+    window.SupabaseSync?.upsertStudent(student);
   }
 
   deleteStudent(id) {
     this.data.students = this.data.students.filter(s => s.id !== id);
     this.save();
+    window.SupabaseSync?.deleteStudent(id);
   }
 
   // --- ATTENDANCE LOGS CRUD & RECAP ---
@@ -459,12 +491,14 @@ class DataStore {
       this.data.attendanceLogs.unshift(record);
     }
     this.save();
+    window.SupabaseSync?.upsertAttendanceLog(record);
     return record;
   }
 
   deleteAttendanceLog(id) {
     this.data.attendanceLogs = this.data.attendanceLogs.filter(l => l.id !== id);
     this.save();
+    window.SupabaseSync?.deleteAttendanceLog(id);
   }
 
   // Monthly Recap calculation for Bapak Kamar Activity

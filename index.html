@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="description" content="Sistem Informasi Absensi Digital Asrama Putra - Rekap Harian 4 Sesi dan Keaktifan Bapak Kamar" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://ipsbmrarkncnwwyqmyqp.supabase.co https://*.supabase.co;" />
   <meta name="theme-color" content="#1e40af" />
   <title>E-Absensi Asrama Putra | Digital Attendance System</title>
   <link rel="stylesheet" href="css/style.css" />
@@ -60,6 +60,12 @@
       </nav>
 
       <div class="nav-actions">
+        <!-- Supabase Cloud Sync Status Badge -->
+        <button class="cloud-status-badge" id="btn-cloud-sync" type="button" title="Status Database Supabase - Klik untuk sinkronisasi" aria-label="Status Cloud">
+          <span class="cloud-dot checking" id="cloud-status-dot"></span>
+          <span class="cloud-label desktop-only" id="cloud-status-label">Cloud</span>
+        </button>
+
         <!-- Theme Toggle Button -->
         <button class="btn-icon theme-toggle-btn" id="btn-theme-toggle" title="Ganti Mode Gelap/Terang" aria-label="Toggle Theme">
           <svg id="icon-theme-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -747,9 +753,14 @@
             </h3>
             <p class="card-subtitle">Kelola dan edit semua kriteria, kamar, santri, sesi, dan akun bapak kamar</p>
           </div>
-          <button class="btn btn-secondary" id="btn-admin-backup" style="min-height:36px; padding:4px 12px; font-size:0.8rem;">
-            💾 Backup / Restore Data
-          </button>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <button class="btn btn-primary" id="btn-admin-sync-cloud" type="button" style="min-height:36px; padding:4px 12px; font-size:0.8rem;" title="Sinkronkan seluruh data dengan database Supabase Cloud">
+              ☁️ Sinkron Cloud
+            </button>
+            <button class="btn btn-secondary" id="btn-admin-backup" type="button" style="min-height:36px; padding:4px 12px; font-size:0.8rem;">
+              💾 Backup / Restore Data
+            </button>
+          </div>
         </div>
 
         <!-- Admin Sub-Navigation Tabs -->
@@ -1460,6 +1471,7 @@
 
   <!-- ================= SCRIPTS ================= -->
   <script src="js/security.js"></script>
+  <script src="js/supabase.js"></script>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
 </body>
