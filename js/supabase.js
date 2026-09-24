@@ -54,8 +54,19 @@ class SupabaseService {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
+    const method = (options.method || 'GET').toUpperCase();
+    const baseHeaders = {
+      'apikey': this.anonKey,
+      'Authorization': `Bearer ${this.anonKey}`,
+      'Content-Type': 'application/json'
+    };
+
+    if (method === 'POST' || method === 'PATCH' || method === 'PUT') {
+      baseHeaders['Prefer'] = 'return=representation,resolution=merge-duplicates';
+    }
+
     const mergedHeaders = {
-      ...this.headers,
+      ...baseHeaders,
       ...(options.headers || {})
     };
 
