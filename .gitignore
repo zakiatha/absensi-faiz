@@ -2,3 +2,9 @@ chat.md
 .DS_Store
 *.log
 Thumbs.db
+.env
+.env.*
+*.tmp
+*.bak
+node_modules/
+

@@ -155,7 +155,6 @@ class SupabaseService {
       room_id: u.roomId || '',
       status: u.status || 'active',
       password_hash: u.passwordHash || '',
-      plain_password: u.plainPassword || '',
       updated_at: new Date().toISOString()
     };
   }
@@ -168,8 +167,7 @@ class SupabaseService {
       phone: row.phone || '',
       roomId: row.room_id || row.roomId || '',
       status: row.status || 'active',
-      passwordHash: row.password_hash || row.passwordHash || '',
-      plainPassword: row.plain_password || row.plainPassword || ''
+      passwordHash: row.password_hash || row.passwordHash || ''
     };
   }
 

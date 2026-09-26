@@ -33,10 +33,12 @@ CREATE TABLE IF NOT EXISTS public.users (
   room_id TEXT DEFAULT '',
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
   password_hash TEXT,
-  plain_password TEXT,
   created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
+
+-- Pastikan kolom plaintext password dihapus jika tabel sudah ada sebelumnya
+ALTER TABLE public.users DROP COLUMN IF EXISTS plain_password;
 
 -- 3. TABEL SESI ABSENSI (sessions)
 CREATE TABLE IF NOT EXISTS public.sessions (
@@ -129,6 +131,58 @@ DROP POLICY IF EXISTS "Allow anon all on attendance_logs" ON public.attendance_l
 CREATE POLICY "Allow anon all on attendance_logs" ON public.attendance_logs FOR ALL TO anon USING (true) WITH CHECK (true);
 
 -- ==============================================================================
+-- PROTEKSI DATABASE TINGKAT TINGGI (TRIGGER & INTEGRITY CONSTRAINTS)
+-- ==============================================================================
+
+-- 1. Trigger: Melindungi akun admin utama dari penghapusan disengaja atau tidak
+CREATE OR REPLACE FUNCTION public.protect_admin_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF LOWER(OLD.username) = 'admin' THEN
+    RAISE EXCEPTION 'Keamanan Database: Akun admin utama tidak boleh dihapus!';
+  END IF;
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_protect_admin ON public.users;
+CREATE TRIGGER trg_protect_admin
+BEFORE DELETE ON public.users
+FOR EACH ROW EXECUTE FUNCTION public.protect_admin_user();
+
+-- 2. Fungsi Verifikasi Kredensial Server-Side (RPC)
+-- Memvalidasi autentikasi langsung di dalam database engine
+CREATE OR REPLACE FUNCTION public.verify_user_credentials(p_username TEXT, p_password_hash TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_user RECORD;
+BEGIN
+  SELECT username, name, role, phone, room_id, status
+  INTO v_user
+  FROM public.users
+  WHERE LOWER(username) = LOWER(p_username)
+    AND password_hash = p_password_hash;
+
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object('valid', false, 'message', 'Username atau kata sandi tidak cocok.');
+  END IF;
+
+  IF v_user.status = 'inactive' THEN
+    RETURN jsonb_build_object('valid', false, 'message', 'Akun dinonaktifkan oleh Administrator.');
+  END IF;
+
+  RETURN jsonb_build_object('valid', true, 'user', row_to_json(v_user));
+END;
+$$;
+
+-- Berikan izin akses RPC ke anon role
+GRANT EXECUTE ON FUNCTION public.verify_user_credentials(TEXT, TEXT) TO anon;
+
+-- ==============================================================================
 -- DATA SEED AWAL (DEFAULT ROOMS, USERS, SESSIONS, CRITERIA, STUDENTS)
 -- ==============================================================================
 
@@ -148,22 +202,21 @@ ON CONFLICT (id) DO UPDATE SET
   floor = EXCLUDED.floor;
 
 -- 2. Seed Users (Password menggunakan SHA-256 + Salt: asrama_pesantren_secure_salt_2026)
-INSERT INTO public.users (username, name, role, phone, room_id, status, password_hash, plain_password) VALUES
-  ('admin', 'Ust. H. Abdurrahman (Admin Pusat)', 'admin', '081234567890', '', 'active', '70f239dfe9cff3f7fc89d60f742a46b7c1004ef423987117f963a77dfea4d1da', 'admin123'),
-  ('faiz', 'Ustadz Faiz Ar-Rasyid', 'bapak_kamar', '081298765431', 'kamar-1', 'active', 'b2b7306e1fea9a2237ce9e626be243e5a121f8f3839ea4f105f766f0c2e78c99', 'faiz123'),
-  ('zaki', 'Ustadz Zaki Athallah', 'bapak_kamar', '081298765432', 'kamar-2', 'active', '1a485aad06363145632cc00bfc8bb757330e7b9668fcb8d66404ec909ec90240', 'zaki123'),
-  ('ridwan', 'Ustadz Ridwan Kamil', 'bapak_kamar', '081298765433', 'kamar-3', 'active', '327f958862d48a055c36bfe89e2af82fd0c03cd4d7806fb22f7b2d73197793bc', 'ridwan123'),
-  ('hanif', 'Ustadz Hanif Al-Banjari', 'bapak_kamar', '081298765434', 'kamar-4', 'active', 'f973e802240ab5b4ba14510cfda0354355f89818280170e7425b9f638d401c24', 'hanif123'),
-  ('ilham', 'Ustadz Ilham Nugraha', 'bapak_kamar', '081298765435', 'kamar-5', 'active', '550496275fa0c9334eec87edf70f1923d3370c673b81200091ae1228bbd83beb', 'ilham123'),
-  ('danang', 'Ustadz Danang Prasetyo', 'bapak_kamar', '081298765436', 'kamar-6', 'active', 'e28a6c780980683323884e30ed01febb4b53084227809e3aadcddf2858307b37', 'danang123')
+INSERT INTO public.users (username, name, role, phone, room_id, status, password_hash) VALUES
+  ('admin', 'Ust. H. Abdurrahman (Admin Pusat)', 'admin', '081234567890', '', 'active', '70f239dfe9cff3f7fc89d60f742a46b7c1004ef423987117f963a77dfea4d1da'),
+  ('faiz', 'Ustadz Faiz Ar-Rasyid', 'bapak_kamar', '081298765431', 'kamar-1', 'active', 'b2b7306e1fea9a2237ce9e626be243e5a121f8f3839ea4f105f766f0c2e78c99'),
+  ('zaki', 'Ustadz Zaki Athallah', 'bapak_kamar', '081298765432', 'kamar-2', 'active', '1a485aad06363145632cc00bfc8bb757330e7b9668fcb8d66404ec909ec90240'),
+  ('ridwan', 'Ustadz Ridwan Kamil', 'bapak_kamar', '081298765433', 'kamar-3', 'active', '327f958862d48a055c36bfe89e2af82fd0c03cd4d7806fb22f7b2d73197793bc'),
+  ('hanif', 'Ustadz Hanif Al-Banjari', 'bapak_kamar', '081298765434', 'kamar-4', 'active', 'f973e802240ab5b4ba14510cfda0354355f89818280170e7425b9f638d401c24'),
+  ('ilham', 'Ustadz Ilham Nugraha', 'bapak_kamar', '081298765435', 'kamar-5', 'active', '550496275fa0c9334eec87edf70f1923d3370c673b81200091ae1228bbd83beb'),
+  ('danang', 'Ustadz Danang Prasetyo', 'bapak_kamar', '081298765436', 'kamar-6', 'active', 'e28a6c780980683323884e30ed01febb4b53084227809e3aadcddf2858307b37')
 ON CONFLICT (username) DO UPDATE SET
   name = EXCLUDED.name,
   role = EXCLUDED.role,
   phone = EXCLUDED.phone,
   room_id = EXCLUDED.room_id,
   status = EXCLUDED.status,
-  password_hash = EXCLUDED.password_hash,
-  plain_password = EXCLUDED.plain_password;
+  password_hash = EXCLUDED.password_hash;
 
 -- 3. Seed Sessions
 INSERT INTO public.sessions (id, name, label, time_range, order_num, active) VALUES

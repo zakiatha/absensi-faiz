@@ -1911,7 +1911,6 @@ class AbsensiApp {
     const users = window.store.getUsers();
     tbody.innerHTML = users.map(u => {
       const room = u.roomId ? window.store.getRoomById(u.roomId) : null;
-      const pwd = u.plainPassword || (u.username === 'admin' ? 'admin123' : `${u.username}123`);
       const isInactive = u.status === 'inactive';
       return `
         <tr>
@@ -1924,10 +1923,11 @@ class AbsensiApp {
           </td>
           <td>${esc(room ? room.name.split(' - ')[0] : 'Semua Kamar')}</td>
           <td>
-            <div class="password-cell">
-              <span class="password-text" id="pwd-val-${esc(u.username)}" data-plain="${esc(pwd)}">••••••</span>
-              <button type="button" class="btn-icon-xs" title="Lihat/Sembunyikan Password" onclick="app.toggleShowUserPassword('${esc(u.username)}')">👁️</button>
-              <button type="button" class="btn-icon-xs" title="Salin Password" onclick="app.copyUserPassword('${esc(u.username)}')">📋</button>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">🔒 SHA-256</span>
+              <button type="button" class="btn btn-secondary" style="min-height:26px; padding:2px 7px; font-size:0.72rem;" title="Reset / Ubah Password Akun Ini" onclick="app.promptResetUserPassword('${esc(u.username)}')">
+                Ubah Sandi
+              </button>
             </div>
           </td>
           <td>
@@ -1967,26 +1967,28 @@ class AbsensiApp {
     }
   }
 
-  toggleShowUserPassword(username) {
-    const el = document.getElementById(`pwd-val-${username}`);
-    if (!el) return;
-    const plain = el.getAttribute('data-plain') || '';
-    if (el.textContent === '••••••') {
-      el.textContent = plain;
-    } else {
-      el.textContent = '••••••';
+  async promptResetUserPassword(username) {
+    const user = window.store.getUser(username);
+    if (!user) return;
+    const newPass = prompt(`Masukkan kata sandi baru untuk @${user.username} (${user.name}):\n(Minimal 6 karakter)`);
+    if (newPass === null) return;
+    const cleanPass = newPass.trim();
+    if (cleanPass.length < 6) {
+      this.showToast('Kata sandi baru minimal 6 karakter!', 'error');
+      return;
     }
+    user.newPassword = cleanPass;
+    await window.store.saveUser(user);
+    this.showToast(`Kata sandi untuk @${user.username} berhasil diperbarui!`, 'success');
+    this.renderAdminUsers();
+  }
+
+  toggleShowUserPassword(username) {
+    this.showToast('Kata sandi dienkripsi dengan standar SHA-256 dan dilindungi dari pencurian kredensial.', 'info');
   }
 
   copyUserPassword(username) {
-    const el = document.getElementById(`pwd-val-${username}`);
-    const plain = el ? el.getAttribute('data-plain') : '';
-    if (!plain) return;
-    navigator.clipboard.writeText(plain).then(() => {
-      this.showToast(`Kata sandi @${username} disalin!`, 'success');
-    }).catch(() => {
-      this.showToast(`Kata sandi: ${plain}`, 'info');
-    });
+    this.showToast('Demi keamanan, gunakan tombol Ubah Sandi jika ingin mengatur ulang kata sandi pengguna.', 'info');
   }
 
   // --- MODAL CONTROLLERS ---
@@ -2168,7 +2170,12 @@ class AbsensiApp {
 
     document.getElementById('modal-user-username').value = '';
     document.getElementById('modal-user-username').readOnly = false;
-    document.getElementById('modal-user-password').value = '123456';
+    const pwdInput = document.getElementById('modal-user-password');
+    if (pwdInput) {
+      pwdInput.value = '';
+      pwdInput.placeholder = 'Kata sandi awal (min. 6 karakter, default: 123456)';
+      pwdInput.required = false;
+    }
     document.getElementById('modal-user-fullname').value = '';
     document.getElementById('modal-user-role').value = 'bapak_kamar';
     document.getElementById('modal-user-status').value = 'active';
@@ -2187,7 +2194,12 @@ class AbsensiApp {
 
     document.getElementById('modal-user-username').value = u.username;
     document.getElementById('modal-user-username').readOnly = true;
-    document.getElementById('modal-user-password').value = u.plainPassword || '';
+    const pwdInput = document.getElementById('modal-user-password');
+    if (pwdInput) {
+      pwdInput.value = '';
+      pwdInput.placeholder = 'Kosongkan jika tidak ingin mengubah kata sandi';
+      pwdInput.required = false;
+    }
     document.getElementById('modal-user-fullname').value = u.name;
     document.getElementById('modal-user-role').value = u.role;
     document.getElementById('modal-user-status').value = u.status || 'active';
@@ -2475,9 +2487,10 @@ class AbsensiApp {
             return;
           }
           // Secure password hashing with Web Crypto API SHA-256 + Salt
-          user.salt = window.store.generateSalt ? window.store.generateSalt() : 'absensi-salt';
-          user.passwordHash = await window.store.hashPassword(newPass, user.salt);
+          user.passwordHash = await window.SecurityUtils.hashPassword(newPass);
           delete user.password;
+          delete user.plainPassword;
+          delete user.salt;
         }
 
         await window.store.saveUser(user);
@@ -2820,14 +2833,23 @@ class AbsensiApp {
 
         const user = {
           username: username,
-          password: pass ? pass : (existing ? (existing.plainPassword || existing.password) : '123456'),
-          plainPassword: pass ? pass : (existing ? (existing.plainPassword || existing.password) : '123456'),
           name: document.getElementById('modal-user-fullname').value.trim(),
           role: document.getElementById('modal-user-role').value,
           status: status,
           roomId: document.getElementById('modal-user-room').value,
           phone: document.getElementById('modal-user-phone').value.trim()
         };
+
+        if (pass) {
+          if (pass.length < 6) {
+            this.showToast('Kata sandi minimal 6 karakter!', 'error');
+            return;
+          }
+          user.newPassword = pass;
+        } else if (!existing) {
+          user.newPassword = '123456';
+        }
+
         await window.store.saveUser(user);
         this.closeModal('modal-user');
         this.showToast('Akun pengguna berhasil disimpan!', 'success');

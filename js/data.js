@@ -18,13 +18,13 @@ const DEFAULT_ROOMS = [
 ];
 
 const DEFAULT_USERS = [
-  { username: 'admin', password: 'admin123', plainPassword: 'admin123', name: 'Ust. H. Abdurrahman (Admin Pusat)', role: 'admin', phone: '081234567890', roomId: '', status: 'active' },
-  { username: 'faiz', password: 'faiz123', plainPassword: 'faiz123', name: 'Ustadz Faiz Ar-Rasyid', role: 'bapak_kamar', phone: '081298765431', roomId: 'kamar-1', status: 'active' },
-  { username: 'zaki', password: 'zaki123', plainPassword: 'zaki123', name: 'Ustadz Zaki Athallah', role: 'bapak_kamar', phone: '081298765432', roomId: 'kamar-2', status: 'active' },
-  { username: 'ridwan', password: 'ridwan123', plainPassword: 'ridwan123', name: 'Ustadz Ridwan Kamil', role: 'bapak_kamar', phone: '081298765433', roomId: 'kamar-3', status: 'active' },
-  { username: 'hanif', password: 'hanif123', plainPassword: 'hanif123', name: 'Ustadz Hanif Al-Banjari', role: 'bapak_kamar', phone: '081298765434', roomId: 'kamar-4', status: 'active' },
-  { username: 'ilham', password: 'ilham123', plainPassword: 'ilham123', name: 'Ustadz Ilham Nugraha', role: 'bapak_kamar', phone: '081298765435', roomId: 'kamar-5', status: 'active' },
-  { username: 'danang', password: 'danang123', plainPassword: 'danang123', name: 'Ustadz Danang Prasetyo', role: 'bapak_kamar', phone: '081298765436', roomId: 'kamar-6', status: 'active' }
+  { username: 'admin', passwordHash: '70f239dfe9cff3f7fc89d60f742a46b7c1004ef423987117f963a77dfea4d1da', name: 'Ust. H. Abdurrahman (Admin Pusat)', role: 'admin', phone: '081234567890', roomId: '', status: 'active' },
+  { username: 'faiz', passwordHash: 'b2b7306e1fea9a2237ce9e626be243e5a121f8f3839ea4f105f766f0c2e78c99', name: 'Ustadz Faiz Ar-Rasyid', role: 'bapak_kamar', phone: '081298765431', roomId: 'kamar-1', status: 'active' },
+  { username: 'zaki', passwordHash: '1a485aad06363145632cc00bfc8bb757330e7b9668fcb8d66404ec909ec90240', name: 'Ustadz Zaki Athallah', role: 'bapak_kamar', phone: '081298765432', roomId: 'kamar-2', status: 'active' },
+  { username: 'ridwan', passwordHash: '327f958862d48a055c36bfe89e2af82fd0c03cd4d7806fb22f7b2d73197793bc', name: 'Ustadz Ridwan Kamil', role: 'bapak_kamar', phone: '081298765433', roomId: 'kamar-3', status: 'active' },
+  { username: 'hanif', passwordHash: 'f973e802240ab5b4ba14510cfda0354355f89818280170e7425b9f638d401c24', name: 'Ustadz Hanif Al-Banjari', role: 'bapak_kamar', phone: '081298765434', roomId: 'kamar-4', status: 'active' },
+  { username: 'ilham', passwordHash: '550496275fa0c9334eec87edf70f1923d3370c673b81200091ae1228bbd83beb', name: 'Ustadz Ilham Nugraha', role: 'bapak_kamar', phone: '081298765435', roomId: 'kamar-5', status: 'active' },
+  { username: 'danang', passwordHash: 'e28a6c780980683323884e30ed01febb4b53084227809e3aadcddf2858307b37', name: 'Ustadz Danang Prasetyo', role: 'bapak_kamar', phone: '081298765436', roomId: 'kamar-6', status: 'active' }
 ];
 
 const DEFAULT_SESSIONS = [
@@ -163,30 +163,42 @@ class DataStore {
     }
   }
 
+  async hashPassword(password) {
+    if (window.SecurityUtils) {
+      return await window.SecurityUtils.hashPassword(password);
+    }
+    return '';
+  }
+
   async hashInitialPasswordsIfNeeded() {
     let modified = false;
-    const defaultPassMap = {
-      admin: 'admin123',
-      faiz: 'faiz123',
-      zaki: 'zaki123',
-      ridwan: 'ridwan123',
-      hanif: 'hanif123',
-      ilham: 'ilham123',
-      danang: 'danang123'
+    const defaultHashMap = {
+      admin: '70f239dfe9cff3f7fc89d60f742a46b7c1004ef423987117f963a77dfea4d1da',
+      faiz: 'b2b7306e1fea9a2237ce9e626be243e5a121f8f3839ea4f105f766f0c2e78c99',
+      zaki: '1a485aad06363145632cc00bfc8bb757330e7b9668fcb8d66404ec909ec90240',
+      ridwan: '327f958862d48a055c36bfe89e2af82fd0c03cd4d7806fb22f7b2d73197793bc',
+      hanif: 'f973e802240ab5b4ba14510cfda0354355f89818280170e7425b9f638d401c24',
+      ilham: '550496275fa0c9334eec87edf70f1923d3370c673b81200091ae1228bbd83beb',
+      danang: 'e28a6c780980683323884e30ed01febb4b53084227809e3aadcddf2858307b37'
     };
 
     for (const u of (this.data.users || [])) {
-      if (!u.plainPassword) {
-        u.plainPassword = u.password || defaultPassMap[u.username.toLowerCase()] || '123456';
-        modified = true;
-      }
       if (!u.status) {
         u.status = 'active';
         modified = true;
       }
-      if (window.SecurityUtils && (!u.passwordHash || u.password)) {
-        u.passwordHash = await window.SecurityUtils.hashPassword(u.plainPassword);
+      // Proactively scrub any legacy plaintext password properties from local storage
+      if (u.plainPassword || u.password) {
+        const raw = u.plainPassword || u.password;
+        if (!u.passwordHash && window.SecurityUtils) {
+          u.passwordHash = await window.SecurityUtils.hashPassword(raw);
+        }
+        delete u.plainPassword;
         delete u.password;
+        modified = true;
+      }
+      if (!u.passwordHash) {
+        u.passwordHash = defaultHashMap[u.username.toLowerCase()] || '';
         modified = true;
       }
     }
@@ -195,27 +207,11 @@ class DataStore {
 
   async verifyPassword(enteredPassword, user) {
     if (!user || !enteredPassword) return false;
-    if (user.status === 'inactive') {
-      return false;
-    }
-    if (!window.SecurityUtils) {
-      return user.plainPassword === enteredPassword || user.password === enteredPassword || user.passwordHash === enteredPassword;
-    }
-    const hashed = await window.SecurityUtils.hashPassword(enteredPassword);
-    if (user.passwordHash) {
+    if (user.status === 'inactive') return false;
+
+    if (window.SecurityUtils) {
+      const hashed = await window.SecurityUtils.hashPassword(enteredPassword);
       return user.passwordHash === hashed;
-    }
-    if (user.plainPassword && user.plainPassword === enteredPassword) {
-      user.passwordHash = hashed;
-      this.save();
-      return true;
-    }
-    if (user.password && user.password === enteredPassword) {
-      user.passwordHash = hashed;
-      user.plainPassword = enteredPassword;
-      delete user.password;
-      this.save();
-      return true;
     }
     return false;
   }
@@ -232,7 +228,7 @@ class DataStore {
     const cloned = JSON.parse(JSON.stringify(this.data));
     if (cloned.users) {
       cloned.users = cloned.users.map(u => {
-        const { password, passwordHash, ...safeUser } = u;
+        const { password, plainPassword, passwordHash, ...safeUser } = u;
         return safeUser;
       });
     }
@@ -293,13 +289,15 @@ class DataStore {
   async saveUser(user) {
     const cleanUser = { ...user };
     cleanUser.status = user.status || 'active';
-    if (user.password || user.plainPassword) {
-      const rawPass = user.password || user.plainPassword;
-      cleanUser.plainPassword = rawPass;
+    delete cleanUser.plainPassword;
+
+    if (user.newPassword || user.password) {
+      const rawPass = user.newPassword || user.password;
       if (window.SecurityUtils) {
         cleanUser.passwordHash = await window.SecurityUtils.hashPassword(rawPass);
       }
       delete cleanUser.password;
+      delete cleanUser.newPassword;
     }
     const index = this.data.users.findIndex(u => u.username.toLowerCase() === cleanUser.username.toLowerCase());
     if (index >= 0) {
@@ -308,7 +306,7 @@ class DataStore {
       this.data.users.push(cleanUser);
     }
     this.save();
-    window.SupabaseSync?.upsertUser(cleanUser);
+    window.SupabaseSync?.upsertUser(this.data.users.find(u => u.username.toLowerCase() === cleanUser.username.toLowerCase()) || cleanUser);
   }
 
   deleteUser(username) {
