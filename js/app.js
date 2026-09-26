@@ -191,9 +191,9 @@ class AbsensiApp {
     } else if (this.currentView === 'view-admin') {
       this.renderAdminView();
     } else if (this.currentView === 'view-rekap') {
-      this.renderMonthlyRecap();
+      this.renderRekapView();
     } else if (this.currentView === 'view-absen') {
-      this.updateAttendanceCounters();
+      this.loadStudentListForAttendance();
     }
   }
 
@@ -661,6 +661,13 @@ class AbsensiApp {
 
     // Always fetch fresh master students currently assigned to this room
     const allRoomStudents = window.store.getStudents(roomId) || [];
+
+    if (allRoomStudents.length === 0) {
+      this.renderSessionStudentCards();
+      this.populateStudentAddPicker();
+      this.updateAttendanceCounters();
+      return;
+    }
 
     if (existingLog && Array.isArray(existingLog.items) && existingLog.items.length > 0) {
       // Map existing recorded status and notes by studentId
@@ -2071,6 +2078,9 @@ class AbsensiApp {
       if (this.currentView === 'view-absen') {
         this.loadStudentListForAttendance();
       }
+      if (this.currentView === 'view-rekap') {
+        this.renderRekapView();
+      }
     }
   }
 
@@ -2664,6 +2674,32 @@ class AbsensiApp {
     const btnAddUser = document.getElementById('btn-add-user');
     const btnAdminBackup = document.getElementById('btn-admin-backup');
     const btnToggleUserPwd = document.getElementById('btn-toggle-modal-user-pwd');
+
+    const btnCleanMock = document.getElementById('btn-clean-mock-students');
+    if (btnCleanMock) {
+      btnCleanMock.addEventListener('click', async () => {
+        if (confirm('Bersihkan seluruh santri contoh bawaan dan log absensi pengujian? Data santri asli yang telah Anda buat tidak akan terhapus.')) {
+          this.playHaptic(40);
+          window.store.cleanLegacyMockData();
+          if (window.SupabaseSync) {
+            const mockIds = [];
+            for (let r = 1; r <= 6; r++) {
+              for (let s = 1; s <= 6; s++) {
+                mockIds.push(`std-${r}0${s}`);
+              }
+            }
+            for (const id of mockIds) {
+              await window.SupabaseSync.deleteStudent(id);
+            }
+          }
+          this.showToast('Data santri contoh dan pengujian berhasil dibersihkan!', 'success');
+          this.renderAdminStudents();
+          this.renderDashboard();
+          if (this.currentView === 'view-absen') this.loadStudentListForAttendance();
+          if (this.currentView === 'view-rekap') this.renderRekapView();
+        }
+      });
+    }
 
     if (btnAddRoom) btnAddRoom.addEventListener('click', () => this.openAddRoomModal());
     if (btnAddStudent) btnAddStudent.addEventListener('click', () => this.openAddStudentModal());

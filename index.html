@@ -790,11 +790,14 @@
             <h4 style="font-size:1.05rem; font-weight:700;">Data Santri Penghuni Kamar</h4>
             <p class="card-subtitle">Total santri terdaftar di semua kamar</p>
           </div>
-          <div style="display:flex; gap:8px;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <select id="admin-filter-student-room" class="form-select" style="min-height:38px; padding:4px 10px; font-size:0.82rem;">
               <option value="all">Semua Kamar</option>
               <!-- Injected via JS -->
             </select>
+            <button class="btn btn-secondary" id="btn-clean-mock-students" style="min-height:38px; padding:6px 12px; font-size:0.82rem;" title="Bersihkan sisa data santri contoh/dummy dan log pengujian">
+              🧹 Bersihkan Santri Contoh
+            </button>
             <button class="btn btn-primary" id="btn-add-student" style="min-height:38px; padding:6px 14px; font-size:0.82rem;">
               + Tambah Santri
             </button>

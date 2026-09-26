@@ -308,11 +308,11 @@ class SupabaseService {
         store.data.criteria = criteriaRows.map(c => this.rowToCriterion(c));
         hasData = true;
       }
-      if (Array.isArray(studentsRows) && studentsRows.length > 0) {
+      if (Array.isArray(studentsRows)) {
         store.data.students = studentsRows.map(s => this.rowToStudent(s));
         hasData = true;
       }
-      if (Array.isArray(logsRows) && logsRows.length > 0) {
+      if (Array.isArray(logsRows)) {
         store.data.attendanceLogs = logsRows.map(l => this.rowToLog(l));
         hasData = true;
       }

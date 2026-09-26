@@ -41,138 +41,13 @@ const DEFAULT_CRITERIA = [
   { id: 'pulang', label: 'Pulang', color: '#6366f1', bgColor: '#eef2ff', borderColor: '#c7d2fe', desc: 'Pulang ke rumah walisantri secara legal' }
 ];
 
-const DEFAULT_STUDENTS = [
-  // Kamar 1
-  { id: 'std-101', nis: '20260101', name: 'Muhammad Al-Fatih', roomId: 'kamar-1', class: '10-A', parentContact: '08130000101' },
-  { id: 'std-102', nis: '20260102', name: 'Ahmad Dahlan Al-Kautsar', roomId: 'kamar-1', class: '10-A', parentContact: '08130000102' },
-  { id: 'std-103', nis: '20260103', name: 'Bilal bin Rabah Pratama', roomId: 'kamar-1', class: '10-B', parentContact: '08130000103' },
-  { id: 'std-104', nis: '20260104', name: 'Salman Al-Farisi Ilham', roomId: 'kamar-1', class: '10-B', parentContact: '08130000104' },
-  { id: 'std-105', nis: '20260105', name: 'Zaid bin Tsabit Firdaus', roomId: 'kamar-1', class: '11-A', parentContact: '08130000105' },
-  { id: 'std-106', nis: '20260106', name: 'Usamah bin Zaid Munir', roomId: 'kamar-1', class: '11-B', parentContact: '08130000106' },
-
-  // Kamar 2
-  { id: 'std-201', nis: '20260201', name: 'Khalid bin Walid Saifullah', roomId: 'kamar-2', class: '10-A', parentContact: '08130000201' },
-  { id: 'std-202', nis: '20260202', name: 'Thariq bin Ziyad Rahman', roomId: 'kamar-2', class: '10-B', parentContact: '08130000202' },
-  { id: 'std-203', nis: '20260203', name: 'Hamzah bin Abdul Muthalib', roomId: 'kamar-2', class: '11-A', parentContact: '08130000203' },
-  { id: 'std-204', nis: '20260204', name: 'Saad bin Abi Waqqas Zuhri', roomId: 'kamar-2', class: '11-B', parentContact: '08130000204' },
-  { id: 'std-205', nis: '20260205', name: 'Ammar bin Yasir Rasyid', roomId: 'kamar-2', class: '12-A', parentContact: '08130000205' },
-  { id: 'std-206', nis: '20260206', name: 'Muadz bin Jabal Anshari', roomId: 'kamar-2', class: '12-B', parentContact: '08130000206' },
-
-  // Kamar 3
-  { id: 'std-301', nis: '20260301', name: 'Abdullah bin Masud Hafizh', roomId: 'kamar-3', class: '10-A', parentContact: '08130000301' },
-  { id: 'std-302', nis: '20260302', name: 'Abu Dzar Al-Ghifari Shadiq', roomId: 'kamar-3', class: '10-B', parentContact: '08130000302' },
-  { id: 'std-303', nis: '20260303', name: 'Hudzaifah bin Al-Yaman Amin', roomId: 'kamar-3', class: '11-A', parentContact: '08130000303' },
-  { id: 'std-304', nis: '20260304', name: 'Jafar bin Abi Thalib Thayar', roomId: 'kamar-3', class: '11-B', parentContact: '08130000304' },
-  { id: 'std-305', nis: '20260305', name: 'Shuhaib Ar-Rumi Sinan', roomId: 'kamar-3', class: '12-A', parentContact: '08130000305' },
-  { id: 'std-306', nis: '20260306', name: 'Miqdad bin Amr Aswad', roomId: 'kamar-3', class: '12-B', parentContact: '08130000306' },
-
-  // Kamar 4
-  { id: 'std-401', nis: '20260401', name: 'Hasan bin Ali Murtadha', roomId: 'kamar-4', class: '10-A', parentContact: '08130000401' },
-  { id: 'std-402', nis: '20260402', name: 'Husain bin Ali Mujahid', roomId: 'kamar-4', class: '10-B', parentContact: '08130000402' },
-  { id: 'std-403', nis: '20260403', name: 'Abbas bin Abdul Muthalib', roomId: 'kamar-4', class: '11-A', parentContact: '08130000403' },
-  { id: 'std-404', nis: '20260404', name: 'Abdullah bin Abbas Faqih', roomId: 'kamar-4', class: '11-B', parentContact: '08130000404' },
-  { id: 'std-405', nis: '20260405', name: 'Jabir bin Abdillah Sulami', roomId: 'kamar-4', class: '12-A', parentContact: '08130000405' },
-  { id: 'std-406', nis: '20260406', name: 'Anas bin Malik Khadim', roomId: 'kamar-4', class: '12-B', parentContact: '08130000406' },
-
-  // Kamar 5
-  { id: 'std-501', nis: '20260501', name: 'Said bin Zaid Qurasyi', roomId: 'kamar-5', class: '10-A', parentContact: '08130000501' },
-  { id: 'std-502', nis: '20260502', name: 'Abu Ubaidah Amir Jarrah', roomId: 'kamar-5', class: '10-B', parentContact: '08130000502' },
-  { id: 'std-503', nis: '20260503', name: 'Abdurrahman bin Auf Tajir', roomId: 'kamar-5', class: '11-A', parentContact: '08130000503' },
-  { id: 'std-504', nis: '20260504', name: 'Zubair Al-Awwam Hawari', roomId: 'kamar-5', class: '11-B', parentContact: '08130000504' },
-  { id: 'std-505', nis: '20260505', name: 'Ubay bin Kaab Anshari', roomId: 'kamar-5', class: '12-A', parentContact: '08130000505' },
-  { id: 'std-506', nis: '20260506', name: 'Tamim Ad-Dari Rahib', roomId: 'kamar-5', class: '12-B', parentContact: '08130000506' },
-
-  // Kamar 6
-  { id: 'std-601', nis: '20260601', name: 'Khabbab bin Al-Arat Tamimi', roomId: 'kamar-6', class: '10-A', parentContact: '08130000601' },
-  { id: 'std-602', nis: '20260602', name: 'Bilal Al-Habasyi Muadzin', roomId: 'kamar-6', class: '10-B', parentContact: '08130000602' },
-  { id: 'std-603', nis: '20260603', name: 'Imran bin Hushain Khuzaah', roomId: 'kamar-6', class: '11-A', parentContact: '08130000603' },
-  { id: 'std-604', nis: '20260604', name: 'Hakim bin Hizam Asadi', roomId: 'kamar-6', class: '11-B', parentContact: '08130000604' },
-  { id: 'std-605', nis: '20260605', name: 'Rafi bin Khadij Ausiy', roomId: 'kamar-6', class: '12-A', parentContact: '08130000605' },
-  { id: 'std-606', nis: '20260606', name: 'Abu Hurairah Ad-Dausi', roomId: 'kamar-6', class: '12-B', parentContact: '08130000606' }
-];
+const DEFAULT_STUDENTS = [];
 
 // Helper to generate seed attendance records for the current month so charts & recaps look realistic
 function generateSeedAttendanceLogs() {
-  const logs = [];
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth(); // 0-indexed
-  const currentDay = today.getDate();
-
-  const sessions = ['pagi', 'siang', 'sore', 'malam'];
-  const rooms = DEFAULT_ROOMS;
-
-  // Generate logs for past days up to today
-  // Let's generate for the past 14 days or days of this month
-  const startDay = Math.max(1, currentDay - 7);
-
-  for (let day = startDay; day <= currentDay; day++) {
-    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    
-    // For each room
-    rooms.forEach(room => {
-      const roomStudents = DEFAULT_STUDENTS.filter(s => s.roomId === room.id);
-      
-      // Determine which sessions were taken (Faiz / Kamar 1 has very high attendance, some rooms miss 1 session)
-      sessions.forEach(sess => {
-        // If it's today and session is later than now, don't generate all
-        if (day === currentDay && sess === 'malam') return;
-
-        // Skip occasionally to simulate real life attendance diligence
-        const randomFactor = Math.random();
-        if (room.id === 'kamar-1' && randomFactor > 0.98) return; // Faiz is 98% diligent
-        if (room.id !== 'kamar-1' && randomFactor > 0.88) return; // Others ~88%
-
-        const items = roomStudents.map(std => {
-          let status = 'hadir';
-          let note = '';
-          const r = Math.random();
-          if (r > 0.94) {
-            status = 'izin';
-            note = 'Izin keperluan keluarga';
-          } else if (r > 0.90) {
-            status = 'sakit';
-            note = 'Demam istirahat di UKS';
-          } else if (r > 0.88) {
-            status = 'pulang';
-            note = 'Pulang akhir pekan';
-          }
-
-          return {
-            studentId: std.id,
-            studentName: std.name,
-            status: status,
-            note: note
-          };
-        });
-
-        const timeRecord = sess === 'pagi' ? '05:45' : sess === 'siang' ? '13:05' : sess === 'sore' ? '16:40' : '21:15';
-
-        logs.push({
-          id: `att-${room.id}-${dateStr}-${sess}`,
-          date: dateStr,
-          sessionId: sess,
-          sessionName: sess.toUpperCase(),
-          roomId: room.id,
-          roomName: room.name,
-          recordedByUsername: room.pjId,
-          recordedByName: room.pjName,
-          recordedAt: `${dateStr} ${timeRecord}:22`,
-          items: items,
-          summary: {
-            hadir: items.filter(i => i.status === 'hadir').length,
-            izin: items.filter(i => i.status === 'izin').length,
-            sakit: items.filter(i => i.status === 'sakit').length,
-            pulang: items.filter(i => i.status === 'pulang').length,
-            total: items.length
-          }
-        });
-      });
-    });
-  }
-
-  return logs;
+  return [];
 }
+
 
 // Data Store Manager
 class DataStore {
@@ -189,8 +64,8 @@ class DataStore {
         users: DEFAULT_USERS,
         sessions: DEFAULT_SESSIONS,
         criteria: DEFAULT_CRITERIA,
-        students: DEFAULT_STUDENTS,
-        attendanceLogs: generateSeedAttendanceLogs()
+        students: [],
+        attendanceLogs: []
       };
       this.save();
     } else {
@@ -201,19 +76,73 @@ class DataStore {
         if (!this.data.users) this.data.users = DEFAULT_USERS;
         if (!this.data.sessions) this.data.sessions = DEFAULT_SESSIONS;
         if (!this.data.criteria) this.data.criteria = DEFAULT_CRITERIA;
-        if (!this.data.students) this.data.students = DEFAULT_STUDENTS;
-        if (!this.data.attendanceLogs) this.data.attendanceLogs = [];
+        if (!Array.isArray(this.data.students)) this.data.students = [];
+        if (!Array.isArray(this.data.attendanceLogs)) this.data.attendanceLogs = [];
       } catch (e) {
         console.error('Error parsing stored data, resetting to default', e);
         this.resetToDefaults();
       }
     }
+
+    // Proactively clean up any stale legacy mock students from local storage
+    this.cleanLegacyMockData();
+
     // Proactively migrate plaintext credentials to salted SHA-256 hashes
     this.hashInitialPasswordsIfNeeded();
 
     // Asynchronously connect & sync with Supabase Cloud
     setTimeout(() => this.syncWithSupabase(), 400);
   }
+
+  cleanLegacyMockData() {
+    // Legacy mock student IDs are std-101 .. std-606
+    const isMockStudentId = id => typeof id === 'string' && /^std-[1-6]0[1-6]$/.test(id);
+    let modified = false;
+
+    if (Array.isArray(this.data.students) && this.data.students.length > 0) {
+      const beforeCount = this.data.students.length;
+      this.data.students = this.data.students.filter(s => !isMockStudentId(s.id));
+      if (this.data.students.length !== beforeCount) {
+        modified = true;
+      }
+    }
+
+    if (Array.isArray(this.data.attendanceLogs) && this.data.attendanceLogs.length > 0) {
+      const beforeLogCount = this.data.attendanceLogs.length;
+      // Filter out logs that only contained mock students
+      this.data.attendanceLogs = this.data.attendanceLogs.filter(log => {
+        if (!Array.isArray(log.items) || log.items.length === 0) return true;
+        const allMock = log.items.every(i => isMockStudentId(i.studentId));
+        return !allMock;
+      });
+
+      this.data.attendanceLogs.forEach(log => {
+        if (Array.isArray(log.items)) {
+          const prevLen = log.items.length;
+          log.items = log.items.filter(i => !isMockStudentId(i.studentId));
+          if (log.items.length !== prevLen) {
+            modified = true;
+            log.summary = {
+              hadir: log.items.filter(i => i.status === 'hadir').length,
+              izin: log.items.filter(i => i.status === 'izin').length,
+              sakit: log.items.filter(i => i.status === 'sakit').length,
+              pulang: log.items.filter(i => i.status === 'pulang').length,
+              total: log.items.length
+            };
+          }
+        }
+      });
+
+      if (this.data.attendanceLogs.length !== beforeLogCount) {
+        modified = true;
+      }
+    }
+
+    if (modified) {
+      this.save();
+    }
+  }
+
 
   async syncWithSupabase() {
     if (window.SupabaseSync) {
@@ -317,8 +246,8 @@ class DataStore {
       users: DEFAULT_USERS,
       sessions: DEFAULT_SESSIONS,
       criteria: DEFAULT_CRITERIA,
-      students: DEFAULT_STUDENTS,
-      attendanceLogs: generateSeedAttendanceLogs()
+      students: [],
+      attendanceLogs: []
     };
     this.save();
     this.hashInitialPasswordsIfNeeded();
@@ -464,7 +393,28 @@ class DataStore {
   }
 
   deleteStudent(id) {
-    this.data.students = this.data.students.filter(s => s.id !== id);
+    this.data.students = (this.data.students || []).filter(s => s.id !== id);
+
+    // Cascade cleanup: remove deleted student from all existing attendance logs
+    if (Array.isArray(this.data.attendanceLogs)) {
+      this.data.attendanceLogs.forEach(log => {
+        if (Array.isArray(log.items)) {
+          const prevLen = log.items.length;
+          log.items = log.items.filter(item => item.studentId !== id);
+          if (log.items.length !== prevLen) {
+            log.summary = {
+              hadir: log.items.filter(i => i.status === 'hadir').length,
+              izin: log.items.filter(i => i.status === 'izin').length,
+              sakit: log.items.filter(i => i.status === 'sakit').length,
+              pulang: log.items.filter(i => i.status === 'pulang').length,
+              total: log.items.length
+            };
+            window.SupabaseSync?.upsertAttendanceLog(log);
+          }
+        }
+      });
+    }
+
     this.save();
     window.SupabaseSync?.deleteStudent(id);
   }
