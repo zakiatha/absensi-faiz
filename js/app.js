@@ -1911,6 +1911,7 @@ class AbsensiApp {
     const users = window.store.getUsers();
     tbody.innerHTML = users.map(u => {
       const room = u.roomId ? window.store.getRoomById(u.roomId) : null;
+      const pwd = u.plainPassword || u.password || (u.username === 'admin' ? 'admin123' : `${u.username}123`);
       const isInactive = u.status === 'inactive';
       return `
         <tr>
@@ -1923,11 +1924,11 @@ class AbsensiApp {
           </td>
           <td>${esc(room ? room.name.split(' - ')[0] : 'Semua Kamar')}</td>
           <td>
-            <div style="display:flex; align-items:center; gap:6px;">
-              <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">🔒 SHA-256</span>
-              <button type="button" class="btn btn-secondary" style="min-height:26px; padding:2px 7px; font-size:0.72rem;" title="Reset / Ubah Password Akun Ini" onclick="app.promptResetUserPassword('${esc(u.username)}')">
-                Ubah Sandi
-              </button>
+            <div class="password-cell" style="display:flex; align-items:center; gap:5px;">
+              <span class="password-text" id="pwd-val-${esc(u.username)}" data-plain="${esc(pwd)}" style="font-family:var(--font-mono); font-size:0.85rem; font-weight:600;">••••••</span>
+              <button type="button" class="btn-icon-xs" title="Lihat/Sembunyikan Kata Sandi" onclick="app.toggleShowUserPassword('${esc(u.username)}')">👁️</button>
+              <button type="button" class="btn-icon-xs" title="Salin Kata Sandi" onclick="app.copyUserPassword('${esc(u.username)}')">📋</button>
+              <button type="button" class="btn btn-secondary" style="min-height:24px; padding:1px 6px; font-size:0.7rem; margin-left:2px;" title="Ganti Kata Sandi Akun" onclick="app.promptResetUserPassword('${esc(u.username)}')">Ganti</button>
             </div>
           </td>
           <td>
@@ -1970,25 +1971,50 @@ class AbsensiApp {
   async promptResetUserPassword(username) {
     const user = window.store.getUser(username);
     if (!user) return;
-    const newPass = prompt(`Masukkan kata sandi baru untuk @${user.username} (${user.name}):\n(Minimal 6 karakter)`);
+    const currentPass = user.plainPassword || user.password || (user.username === 'admin' ? 'admin123' : `${user.username}123`);
+    const newPass = prompt(`Ganti kata sandi untuk @${user.username} (${user.name}):\n\nKata sandi saat ini: ${currentPass}\n\nMasukkan kata sandi baru (minimal 6 karakter):`, currentPass);
     if (newPass === null) return;
     const cleanPass = newPass.trim();
     if (cleanPass.length < 6) {
       this.showToast('Kata sandi baru minimal 6 karakter!', 'error');
       return;
     }
-    user.newPassword = cleanPass;
+    user.plainPassword = cleanPass;
+    user.password = cleanPass;
+    if (window.SecurityUtils) {
+      user.passwordHash = await window.SecurityUtils.hashPassword(cleanPass);
+    }
     await window.store.saveUser(user);
-    this.showToast(`Kata sandi untuk @${user.username} berhasil diperbarui!`, 'success');
+    this.showToast(`Kata sandi @${user.username} berhasil diubah menjadi: ${cleanPass}`, 'success');
     this.renderAdminUsers();
   }
 
   toggleShowUserPassword(username) {
-    this.showToast('Kata sandi dienkripsi dengan standar SHA-256 dan dilindungi dari pencurian kredensial.', 'info');
+    const el = document.getElementById(`pwd-val-${username}`);
+    if (!el) return;
+    const plain = el.getAttribute('data-plain') || '';
+    if (el.textContent === '••••••') {
+      el.textContent = plain;
+      el.style.color = 'var(--primary-color, #1e40af)';
+    } else {
+      el.textContent = '••••••';
+      el.style.color = '';
+    }
   }
 
   copyUserPassword(username) {
-    this.showToast('Demi keamanan, gunakan tombol Ubah Sandi jika ingin mengatur ulang kata sandi pengguna.', 'info');
+    const el = document.getElementById(`pwd-val-${username}`);
+    const plain = el ? el.getAttribute('data-plain') : '';
+    if (!plain) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(plain).then(() => {
+        this.showToast(`Kata sandi @${username} disalin: ${plain}`, 'success');
+      }).catch(() => {
+        this.showToast(`Kata sandi @${username}: ${plain}`, 'info');
+      });
+    } else {
+      this.showToast(`Kata sandi @${username}: ${plain}`, 'info');
+    }
   }
 
   // --- MODAL CONTROLLERS ---
@@ -2172,9 +2198,10 @@ class AbsensiApp {
     document.getElementById('modal-user-username').readOnly = false;
     const pwdInput = document.getElementById('modal-user-password');
     if (pwdInput) {
-      pwdInput.value = '';
-      pwdInput.placeholder = 'Kata sandi awal (min. 6 karakter, default: 123456)';
-      pwdInput.required = false;
+      pwdInput.value = '123456';
+      pwdInput.type = 'password';
+      pwdInput.placeholder = 'Kata sandi akun (min. 6 karakter)';
+      pwdInput.required = true;
     }
     document.getElementById('modal-user-fullname').value = '';
     document.getElementById('modal-user-role').value = 'bapak_kamar';
@@ -2194,11 +2221,13 @@ class AbsensiApp {
 
     document.getElementById('modal-user-username').value = u.username;
     document.getElementById('modal-user-username').readOnly = true;
+    const currentPass = u.plainPassword || u.password || (u.username === 'admin' ? 'admin123' : `${u.username}123`);
     const pwdInput = document.getElementById('modal-user-password');
     if (pwdInput) {
-      pwdInput.value = '';
-      pwdInput.placeholder = 'Kosongkan jika tidak ingin mengubah kata sandi';
-      pwdInput.required = false;
+      pwdInput.value = currentPass;
+      pwdInput.type = 'password';
+      pwdInput.placeholder = 'Ubah kata sandi akun di sini';
+      pwdInput.required = true;
     }
     document.getElementById('modal-user-fullname').value = u.name;
     document.getElementById('modal-user-role').value = u.role;
@@ -2845,14 +2874,19 @@ class AbsensiApp {
             this.showToast('Kata sandi minimal 6 karakter!', 'error');
             return;
           }
-          user.newPassword = pass;
-        } else if (!existing) {
-          user.newPassword = '123456';
+          user.plainPassword = pass;
+          user.password = pass;
+        } else if (existing) {
+          user.plainPassword = existing.plainPassword || existing.password;
+          user.password = existing.plainPassword || existing.password;
+        } else {
+          user.plainPassword = '123456';
+          user.password = '123456';
         }
 
         await window.store.saveUser(user);
         this.closeModal('modal-user');
-        this.showToast('Akun pengguna berhasil disimpan!', 'success');
+        this.showToast('Akun pengguna & kata sandi berhasil disimpan!', 'success');
         this.renderAdminUsers();
       });
     }

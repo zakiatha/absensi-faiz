@@ -33,12 +33,13 @@ CREATE TABLE IF NOT EXISTS public.users (
   room_id TEXT DEFAULT '',
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
   password_hash TEXT,
+  plain_password TEXT,
   created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
--- Pastikan kolom plaintext password dihapus jika tabel sudah ada sebelumnya
-ALTER TABLE public.users DROP COLUMN IF EXISTS plain_password;
+-- Pastikan kolom plain_password tersedia untuk panel admin
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS plain_password TEXT;
 
 -- 3. TABEL SESI ABSENSI (sessions)
 CREATE TABLE IF NOT EXISTS public.sessions (
@@ -202,21 +203,22 @@ ON CONFLICT (id) DO UPDATE SET
   floor = EXCLUDED.floor;
 
 -- 2. Seed Users (Password menggunakan SHA-256 + Salt: asrama_pesantren_secure_salt_2026)
-INSERT INTO public.users (username, name, role, phone, room_id, status, password_hash) VALUES
-  ('admin', 'Ust. H. Abdurrahman (Admin Pusat)', 'admin', '081234567890', '', 'active', '70f239dfe9cff3f7fc89d60f742a46b7c1004ef423987117f963a77dfea4d1da'),
-  ('faiz', 'Ustadz Faiz Ar-Rasyid', 'bapak_kamar', '081298765431', 'kamar-1', 'active', 'b2b7306e1fea9a2237ce9e626be243e5a121f8f3839ea4f105f766f0c2e78c99'),
-  ('zaki', 'Ustadz Zaki Athallah', 'bapak_kamar', '081298765432', 'kamar-2', 'active', '1a485aad06363145632cc00bfc8bb757330e7b9668fcb8d66404ec909ec90240'),
-  ('ridwan', 'Ustadz Ridwan Kamil', 'bapak_kamar', '081298765433', 'kamar-3', 'active', '327f958862d48a055c36bfe89e2af82fd0c03cd4d7806fb22f7b2d73197793bc'),
-  ('hanif', 'Ustadz Hanif Al-Banjari', 'bapak_kamar', '081298765434', 'kamar-4', 'active', 'f973e802240ab5b4ba14510cfda0354355f89818280170e7425b9f638d401c24'),
-  ('ilham', 'Ustadz Ilham Nugraha', 'bapak_kamar', '081298765435', 'kamar-5', 'active', '550496275fa0c9334eec87edf70f1923d3370c673b81200091ae1228bbd83beb'),
-  ('danang', 'Ustadz Danang Prasetyo', 'bapak_kamar', '081298765436', 'kamar-6', 'active', 'e28a6c780980683323884e30ed01febb4b53084227809e3aadcddf2858307b37')
+INSERT INTO public.users (username, name, role, phone, room_id, status, password_hash, plain_password) VALUES
+  ('admin', 'Ust. H. Abdurrahman (Admin Pusat)', 'admin', '081234567890', '', 'active', '70f239dfe9cff3f7fc89d60f742a46b7c1004ef423987117f963a77dfea4d1da', 'admin123'),
+  ('faiz', 'Ustadz Faiz Ar-Rasyid', 'bapak_kamar', '081298765431', 'kamar-1', 'active', 'b2b7306e1fea9a2237ce9e626be243e5a121f8f3839ea4f105f766f0c2e78c99', 'faiz123'),
+  ('zaki', 'Ustadz Zaki Athallah', 'bapak_kamar', '081298765432', 'kamar-2', 'active', '1a485aad06363145632cc00bfc8bb757330e7b9668fcb8d66404ec909ec90240', 'zaki123'),
+  ('ridwan', 'Ustadz Ridwan Kamil', 'bapak_kamar', '081298765433', 'kamar-3', 'active', '327f958862d48a055c36bfe89e2af82fd0c03cd4d7806fb22f7b2d73197793bc', 'ridwan123'),
+  ('hanif', 'Ustadz Hanif Al-Banjari', 'bapak_kamar', '081298765434', 'kamar-4', 'active', 'f973e802240ab5b4ba14510cfda0354355f89818280170e7425b9f638d401c24', 'hanif123'),
+  ('ilham', 'Ustadz Ilham Nugraha', 'bapak_kamar', '081298765435', 'kamar-5', 'active', '550496275fa0c9334eec87edf70f1923d3370c673b81200091ae1228bbd83beb', 'ilham123'),
+  ('danang', 'Ustadz Danang Prasetyo', 'bapak_kamar', '081298765436', 'kamar-6', 'active', 'e28a6c780980683323884e30ed01febb4b53084227809e3aadcddf2858307b37', 'danang123')
 ON CONFLICT (username) DO UPDATE SET
   name = EXCLUDED.name,
   role = EXCLUDED.role,
   phone = EXCLUDED.phone,
   room_id = EXCLUDED.room_id,
   status = EXCLUDED.status,
-  password_hash = EXCLUDED.password_hash;
+  password_hash = EXCLUDED.password_hash,
+  plain_password = EXCLUDED.plain_password;
 
 -- 3. Seed Sessions
 INSERT INTO public.sessions (id, name, label, time_range, order_num, active) VALUES

@@ -155,6 +155,7 @@ class SupabaseService {
       room_id: u.roomId || '',
       status: u.status || 'active',
       password_hash: u.passwordHash || '',
+      plain_password: u.plainPassword || u.password || '',
       updated_at: new Date().toISOString()
     };
   }
@@ -167,7 +168,8 @@ class SupabaseService {
       phone: row.phone || '',
       roomId: row.room_id || row.roomId || '',
       status: row.status || 'active',
-      passwordHash: row.password_hash || row.passwordHash || ''
+      passwordHash: row.password_hash || row.passwordHash || '',
+      plainPassword: row.plain_password || row.plainPassword || ''
     };
   }
 
@@ -295,7 +297,14 @@ class SupabaseService {
         hasData = true;
       }
       if (Array.isArray(usersRows) && usersRows.length > 0) {
-        store.data.users = usersRows.map(u => this.rowToUser(u));
+        store.data.users = usersRows.map(u => {
+          const converted = this.rowToUser(u);
+          const localUser = store.getUser(u.username);
+          if (!converted.plainPassword && localUser && localUser.plainPassword) {
+            converted.plainPassword = localUser.plainPassword;
+          }
+          return converted;
+        });
         hasData = true;
       }
       if (Array.isArray(sessionsRows) && sessionsRows.length > 0) {
@@ -352,7 +361,19 @@ class SupabaseService {
         await this.request('rooms', { method: 'POST', body: JSON.stringify(rooms) });
       }
       if (users.length > 0) {
-        await this.request('users', { method: 'POST', body: JSON.stringify(users) });
+        try {
+          await this.request('users', { method: 'POST', body: JSON.stringify(users) });
+        } catch (errUser) {
+          if (errUser.message && (errUser.message.includes('plain_password') || errUser.message.includes('PGRST204'))) {
+            const fallbackUsers = users.map(u => {
+              const { plain_password, ...rest } = u;
+              return rest;
+            });
+            await this.request('users', { method: 'POST', body: JSON.stringify(fallbackUsers) });
+          } else {
+            throw errUser;
+          }
+        }
       }
       if (sessions.length > 0) {
         await this.request('sessions', { method: 'POST', body: JSON.stringify(sessions) });
@@ -401,6 +422,14 @@ class SupabaseService {
       const row = this.userToRow(user);
       await this.request('users', { method: 'POST', body: JSON.stringify([row]) });
     } catch (e) {
+      if (e.message && (e.message.includes('plain_password') || e.message.includes('PGRST204') || e.status === 400)) {
+        try {
+          const fallbackRow = { ...this.userToRow(user) };
+          delete fallbackRow.plain_password;
+          await this.request('users', { method: 'POST', body: JSON.stringify([fallbackRow]) });
+          return;
+        } catch (_) {}
+      }
       console.warn('[Supabase] Sync user background failed:', e.message);
     }
   }
